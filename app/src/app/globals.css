@@ -1,0 +1,130 @@
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+
+  --margin: 16px;
+  --content-vh: calc(100vh - (2 * (var(--margin))));
+}
+
+[data-theme="dark"] {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+*,
+*::-webkit-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html {
+  font-size: 10px;
+  line-height: 1;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: none !important;
+}
+
+body {
+  margin: 0;
+
+  color: var(--foreground);
+  background: var(--background);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-size-adjust: none;
+  font-size-adjust: none;
+
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  font-family: SaansRegular, "Helvetica Neue", Arial, sans-serif;
+}
+
+::selection {
+  background: black;
+  color: white;
+}
+
+main {
+  padding: var(--margin);
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-indent: 0;
+}
+
+li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+  font-weight: inherit;
+}
+
+a,
+a:visited,
+button,
+button:visited {
+  color: var(--foreground);
+  text-decoration: none;
+  font-size: unset;
+  font-family: unset;
+  text-align: unset;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+input,
+fieldset,
+label {
+  all: unset;
+}
+
+/* Hover Events, Desktop Only */
+@media (hover: hover) and (pointer: fine) {
+}
+
+/* Phones in Portrait */
+@media screen and (min-width: 320px) {
+}
+
+/* Phones in Landscape */
+@media (max-height: 500px) and (orientation: landscape) {
+}
+
+/* iPads and other Tablets */
+@media screen and (min-width: 769px) {
+}
+
+/* Desktop */
+@media screen and (min-width: 1280px) {
+}
+
+/* Large Format Screens */
+@media screen and (min-width: 2560px) {
+}

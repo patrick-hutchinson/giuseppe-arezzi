@@ -1,0 +1,23 @@
+main.main {
+  padding: var(--margin);
+  height: 100%;
+  min-height: 100vh;
+  /* min-height: var(--content-vh); */
+  display: flex;
+
+  justify-content: center;
+  flex-direction: column;
+}
+
+.announcement_container {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+@media screen and (min-width: 769px) {
+  .announcement_container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
