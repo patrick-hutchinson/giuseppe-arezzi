@@ -21,4 +21,12 @@ main.main {
     justify-content: space-between;
     gap: 10px;
   }
+
+  .announcement_container br {
+    display: none;
+  }
+}
+
+/* Desktop */
+@media screen and (min-width: 1280px) {
 }
