@@ -1,12 +1,13 @@
 main.main {
   padding: var(--margin);
   height: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   /* min-height: var(--content-vh); */
   display: flex;
 
   justify-content: center;
   flex-direction: column;
+  overflow-y: hidden;
 }
 
 .announcement_container {
