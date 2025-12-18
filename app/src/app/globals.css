@@ -55,7 +55,7 @@ body {
 }
 
 ::selection {
-  background: black;
+  background: #ddd;
   color: white;
 }
 
@@ -97,6 +97,17 @@ button:visited {
   background: transparent;
   border: none;
   cursor: pointer;
+
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4.5px;
+
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+a:hover {
+  opacity: 0.4;
 }
 
 input,
