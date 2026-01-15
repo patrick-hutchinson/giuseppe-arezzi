@@ -1,6 +1,8 @@
 import "./globals.css";
 import "./fonts.css";
 
+import { getSite } from "@/lib/fetch";
+
 const [site] = await Promise.all([getSite()]);
 
 export const metadata = {
