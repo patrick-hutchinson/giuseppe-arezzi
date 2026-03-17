@@ -3,6 +3,9 @@ import "./fonts.css";
 
 import { getSite } from "@/lib/fetch";
 
+import { DeviceProvider } from "@/context/DeviceContext";
+import { ViewportProvider } from "../context/ViewportContext";
+
 const [site] = await Promise.all([getSite()]);
 
 export const metadata = {
@@ -13,7 +16,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <DeviceProvider>
+        <ViewportProvider>
+          <body>{children}</body>
+        </ViewportProvider>
+      </DeviceProvider>
     </html>
   );
 }

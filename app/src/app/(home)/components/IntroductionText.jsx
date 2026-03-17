@@ -1,0 +1,139 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import Text from "@/components/Text/Text";
+
+import styles from "../Home.module.css";
+
+const INTRO_PROJECT_GAP = 100;
+
+const countPortableTextCharacters = (blocks = []) => {
+  return blocks.reduce((count, block) => {
+    if (block?._type !== "block" || !Array.isArray(block.children)) return count;
+
+    return (
+      count +
+      block.children.reduce((childCount, child) => childCount + (child?.text?.length || 0), 0)
+    );
+  }, 0);
+};
+
+const truncatePortableText = (blocks = [], maxCharacters = 0) => {
+  if (maxCharacters <= 0) return [];
+
+  let remaining = maxCharacters;
+  const nextBlocks = [];
+
+  for (const block of blocks) {
+    if (remaining <= 0) break;
+    if (block?._type !== "block" || !Array.isArray(block.children)) continue;
+
+    const nextChildren = [];
+
+    for (const child of block.children) {
+      if (remaining <= 0) break;
+
+      const childText = child?.text || "";
+      if (!childText.length) {
+        nextChildren.push(child);
+        continue;
+      }
+
+      const slice = childText.slice(0, remaining);
+      if (!slice.length) continue;
+
+      nextChildren.push({
+        ...child,
+        text: slice,
+      });
+
+      remaining -= slice.length;
+    }
+
+    if (!nextChildren.length) continue;
+
+    nextBlocks.push({
+      ...block,
+      children: nextChildren,
+    });
+  }
+
+  return nextBlocks;
+};
+
+const IntroductionText = ({ text, projectsBoundaryRef }) => {
+  const introduction = text || [];
+  const totalIntroCharacters = useMemo(
+    () => countPortableTextCharacters(introduction),
+    [introduction]
+  );
+  const introMeasurementRef = useRef(null);
+  const [visibleCharacters, setVisibleCharacters] = useState(totalIntroCharacters);
+
+  useEffect(() => {
+    setVisibleCharacters(totalIntroCharacters);
+  }, [totalIntroCharacters]);
+
+  useEffect(() => {
+    let frameId = null;
+
+    const updateVisibleCharacters = () => {
+      frameId = null;
+
+      const measurementHeight = introMeasurementRef.current?.offsetHeight || 0;
+      const projectsTop = projectsBoundaryRef?.current?.getBoundingClientRect()?.top ?? 0;
+
+      if (!totalIntroCharacters || !measurementHeight) {
+        setVisibleCharacters(totalIntroCharacters);
+        return;
+      }
+
+      const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP);
+      const clampedRatio = Math.max(0, Math.min(1, availableHeight / measurementHeight));
+      const nextVisibleCharacters = Math.floor(totalIntroCharacters * clampedRatio);
+
+      setVisibleCharacters((currentVisibleCharacters) => {
+        if (currentVisibleCharacters === nextVisibleCharacters) return currentVisibleCharacters;
+        return nextVisibleCharacters;
+      });
+    };
+
+    const requestUpdate = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(updateVisibleCharacters);
+    };
+
+    requestUpdate();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    let resizeObserver = null;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(requestUpdate);
+      if (introMeasurementRef.current) resizeObserver.observe(introMeasurementRef.current);
+      if (projectsBoundaryRef?.current) resizeObserver.observe(projectsBoundaryRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+      if (resizeObserver) resizeObserver.disconnect();
+    };
+  }, [projectsBoundaryRef, totalIntroCharacters]);
+
+  const introText = useMemo(
+    () => truncatePortableText(introduction, visibleCharacters),
+    [introduction, visibleCharacters]
+  );
+
+  return (
+    <>
+      <Text text={introText} className={styles.introductionText} />
+      <div className={styles.introductionMeasure} aria-hidden="true" ref={introMeasurementRef}>
+        <Text text={introduction} className={styles.introductionText} />
+      </div>
+    </>
+  );
+};
+
+export default IntroductionText;

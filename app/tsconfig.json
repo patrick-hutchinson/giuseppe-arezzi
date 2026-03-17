@@ -30,7 +30,9 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "src/app/page.jsx",
-    "src/app/layout.jsx"
+    "src/app/layout.jsx",
+    "next.config.mjs",
+    "src/lib/sanity/client.js"
   ],
   "exclude": ["node_modules"]
 }

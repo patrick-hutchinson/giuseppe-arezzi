@@ -2,7 +2,11 @@
   --background: #ffffff;
   --foreground: #000000;
 
-  --margin: 16px;
+  --margin-page: 16px;
+  --margin-1: 120px;
+  --margin-2: 60px;
+  --margin-3: 8px;
+
   --content-vh: calc(100vh - (2 * (var(--margin))));
 }
 
@@ -60,7 +64,9 @@ body {
 }
 
 main {
-  padding: var(--margin);
+  padding: var(--margin-page);
+  height: 100%;
+  min-height: 100dvh;
 }
 
 ul {
@@ -114,6 +120,41 @@ input,
 fieldset,
 label {
   all: unset;
+}
+
+mux-player {
+  --play-button: none;
+  --live-button: none;
+  --seek-backward-button: none;
+  --seek-forward-button: none;
+  --mute-button: none;
+  --captions-button: none;
+  --airplay-button: none;
+  --pip-button: none;
+  --fullscreen-button: none;
+  --cast-button: none;
+  --playback-rate-button: none;
+  --volume-range: none;
+  --time-range: none;
+  --time-display: none;
+  --duration-display: none;
+  --rendition-menu-button: none;
+  --gradient-shadow: none;
+  --media-loading-indicator-display: none;
+  --media-background-color: var(--background);
+  --media-background-color: transparent;
+  pointer-events: none !important;
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+mux-player::part(control-bar) {
+  opacity: 1 !important;
+  --gradient-steps: none !important;
+}
+
+mux-player .mux-spinner {
+  display: none !important;
 }
 
 /* Hover Events, Desktop Only */

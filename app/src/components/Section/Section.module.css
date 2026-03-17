@@ -1,0 +1,4 @@
+.section {
+  margin-bottom: var(--margin-1);
+  height: fit-content;
+}

@@ -1,3 +1,5 @@
+import { mediaAssetFragment } from "./fragments";
+
 export const siteQuery = `*[_type=="site"][0]{
   title,
   googleDescription,
@@ -9,5 +11,19 @@ export const siteQuery = `*[_type=="site"][0]{
 }`;
 
 export const homeQuery = `*[_type=="home"][0]{
-  announcement
+  introduction,
+  awards,
+  clients,
+  press
+}`;
+
+export const projectsQuery = `*[_type=="project"]{
+  _id,
+  _type,
+  year,
+  title,
+  edition,
+  description,
+  gallery[] ${mediaAssetFragment},
+  slug
 }`;

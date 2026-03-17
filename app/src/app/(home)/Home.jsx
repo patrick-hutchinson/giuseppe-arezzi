@@ -1,28 +1,28 @@
+"use client";
+
+import { useRef } from "react";
+
 import styles from "./Home.module.css";
 
-import Text from "@/components/Text/Text";
+import Section from "@/components/Section/Section";
 
-export default function HomePage({ site, home }) {
+import IntroductionText from "./components/IntroductionText";
+import ProjectContainer from "./components/Projects/ProjectContainer";
+
+export default function HomePage({ site, home, projects }) {
+  const projectsSectionRef = useRef(null);
+
   return (
     <main className={styles.main}>
-      <div className={styles.announcement_container}>
-        <div>{site.title}</div>
-        {/* <Text text={home.announcement} /> */}
+      <Section className={styles.introductionSection}>
+        <IntroductionText text={home?.introduction} projectsBoundaryRef={projectsSectionRef} />
+      </Section>
 
-        <p className={styles.announcement_text}>
-          New website under construction. <br />
-          You can contact me at&nbsp;
-          <a href="mailto:info@giuseppearezzi.com">info@giuseppearezzi.com</a>
-        </p>
+      <Section ref={projectsSectionRef}>
+        <ProjectContainer projects={projects} />
+      </Section>
 
-        <div>
-          {site.socials.map((social, index) => (
-            <a key={index} href={social.link} target="_blank">
-              {social.platform}
-            </a>
-          ))}
-        </div>
-      </div>
+      <Section className={styles.publicitySection}>{/* <Text text={home.introduction} /> */}</Section>
     </main>
   );
 }

@@ -1,0 +1,24 @@
+.project {
+  height: 80vh;
+  width: 100vw;
+  position: relative;
+  left: calc(-1 * var(--margin-page));
+  overflow: hidden;
+}
+
+.project:nth-child(1) {
+  background: red;
+}
+.project:nth-child(2) {
+  background: blue;
+}
+
+.projectHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  padding: var(--margin-page);
+  pointer-events: none;
+  will-change: transform;
+}
