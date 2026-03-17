@@ -1,6 +1,6 @@
 import NextImage from "next/image";
 
-const Placeholder = ({ medium, isLoaded }) => {
+const Placeholder = ({ medium, isLoaded, contain = false }) => {
   let src;
 
   medium.type === "image"
@@ -24,6 +24,7 @@ const Placeholder = ({ medium, isLoaded }) => {
         transform: "scale(1.5)",
         opacity: isLoaded ? 0 : 1,
         transition: "opacity 0.5s ease 0.5s",
+        objectFit: contain ?? "cover",
         zIndex: 3,
       }}
     />

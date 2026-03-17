@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import styles from "./Home.module.css";
 
@@ -16,9 +16,20 @@ import Media from "@/components/Media/Media";
 import Carousel from "@/components/Carousel/Carousel";
 
 export default function HomePage({ site, home, projects }) {
+  const introductionSectionRef = useRef(null);
   const projectsSectionRef = useRef(null);
   const [hoveredPrintImage, setHoveredPrintImage] = useState(null);
-  const [activeGallery, setActiveGallery] = useState(null);
+  const [activePrintIndex, setActivePrintIndex] = useState(null);
+  const [showFloatingHeader, setShowFloatingHeader] = useState(false);
+
+  const printItemsWithGallery = useMemo(
+    () => (home?.print || []).filter((printItem) => Array.isArray(printItem?.gallery) && printItem.gallery.length > 0),
+    [home?.print],
+  );
+
+  const hasActivePrint = activePrintIndex !== null && activePrintIndex >= 0;
+  const activePrint = hasActivePrint ? printItemsWithGallery[activePrintIndex] : null;
+  const activeGallery = activePrint?.gallery || null;
 
   const handlePrintHoverStart = (printItem) => {
     const firstGalleryItem = printItem?.gallery?.[0];
@@ -32,16 +43,75 @@ export default function HomePage({ site, home, projects }) {
 
   const handlePrintClick = (printItem) => {
     if (!printItem?.gallery?.length) return;
-    setActiveGallery(printItem.gallery);
+    const nextActiveIndex = printItemsWithGallery.findIndex((item) => item === printItem);
+    if (nextActiveIndex === -1) return;
+    setActivePrintIndex(nextActiveIndex);
   };
 
   const closeGalleryOverlay = () => {
-    setActiveGallery(null);
+    setActivePrintIndex(null);
   };
+
+  const openPreviousPrintGallery = () => {
+    if (!printItemsWithGallery.length || activePrintIndex === null) return;
+    const previousIndex = (activePrintIndex - 1 + printItemsWithGallery.length) % printItemsWithGallery.length;
+    setActivePrintIndex(previousIndex);
+  };
+
+  const openNextPrintGallery = () => {
+    if (!printItemsWithGallery.length || activePrintIndex === null) return;
+    const nextIndex = (activePrintIndex + 1) % printItemsWithGallery.length;
+    setActivePrintIndex(nextIndex);
+  };
+
+  useEffect(() => {
+    let frameId = null;
+
+    const updateHeaderVisibility = () => {
+      frameId = null;
+      const projectsBounds = projectsSectionRef.current?.getBoundingClientRect();
+      if (!projectsBounds) return;
+
+      const marginPage = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--margin-page"));
+      const topThreshold = Number.isFinite(marginPage) ? marginPage : 0;
+
+      setShowFloatingHeader(projectsBounds.top <= topThreshold);
+    };
+
+    const requestUpdate = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(updateHeaderVisibility);
+    };
+
+    requestUpdate();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   return (
     <main className={styles.main}>
-      <Section className={styles.introductionSection}>
+      <AnimatePresence>
+        {showFloatingHeader ? (
+          <motion.header
+            className={styles.floatingHeader}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            // transition={{ duration: 0.22, ease: "easeOut" }}
+          >
+            <span>Giuseppe Arezzi</span>
+            <a href={`mailto:${site?.email || ""}`}>Contact</a>
+          </motion.header>
+        ) : null}
+      </AnimatePresence>
+
+      <Section ref={introductionSectionRef} className={styles.introductionSection}>
         <IntroductionText text={home?.introduction} projectsBoundaryRef={projectsSectionRef} />
       </Section>
 
@@ -163,10 +233,22 @@ export default function HomePage({ site, home, projects }) {
               transition={{ duration: 0.25, ease: "easeOut" }}
               onClick={(event) => event.stopPropagation()}
             >
-              <button className={styles.galleryOverlayClose} onClick={closeGalleryOverlay}>
-                Close
-              </button>
               <Carousel array={activeGallery} />
+
+              <div className={styles.galleryOverlayNavigation}>
+                <button className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
+                  ←
+                </button>
+
+                <button className={styles.galleryOverlayClose} onClick={closeGalleryOverlay}>
+                  x
+                </button>
+
+                <button className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
+                  <span>{printItemsWithGallery[(activePrintIndex + 1) % printItemsWithGallery.length]?.title}</span>
+                  <span>→</span>
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         ) : null}

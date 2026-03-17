@@ -1,15 +1,54 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import styles from "./Projects.module.css";
 
 const CURSOR_OFFSET = 12;
 
-const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showInfo, hideTitle }) => {
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+const ProjectHeader = ({
+  project,
+  isHovering,
+  cursorPosition,
+  handleInfo,
+  showInfo,
+  hideTitle,
+  containerSize,
+}) => {
   const [isToggleHovered, setIsToggleHovered] = useState(false);
+  const [headerSize, setHeaderSize] = useState({ width: 0, height: 0 });
+  const headerRef = useRef(null);
   const shouldHideTitle = hideTitle || isToggleHovered;
-  const targetX = isHovering ? cursorPosition.x + CURSOR_OFFSET : 0;
-  const targetY = isHovering ? cursorPosition.y + CURSOR_OFFSET : 0;
+
+  useEffect(() => {
+    if (!headerRef.current || typeof ResizeObserver === "undefined") return;
+
+    const updateSize = () => {
+      const rect = headerRef.current.getBoundingClientRect();
+      setHeaderSize({ width: rect.width, height: rect.height });
+    };
+
+    updateSize();
+
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(headerRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  let targetX = 0;
+  let targetY = 0;
+
+  if (isHovering) {
+    const rawX = cursorPosition.x + CURSOR_OFFSET;
+    const rawY = cursorPosition.y + CURSOR_OFFSET;
+    const maxX = Math.max(0, (containerSize?.width || 0) - headerSize.width);
+    const maxY = Math.max(0, (containerSize?.height || 0) - headerSize.height);
+
+    targetX = clamp(rawX, 0, maxX);
+    targetY = clamp(rawY, 0, maxY);
+  }
 
   return (
     <div className={styles.projectHeaderLayer}>
@@ -31,6 +70,7 @@ const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showIn
       </AnimatePresence>
 
       <motion.div
+        ref={headerRef}
         className={styles.projectHeader}
         initial={false}
         animate={{ opacity: shouldHideTitle ? 0 : 1, x: targetX, y: targetY }}

@@ -2,8 +2,19 @@
   position: relative;
 }
 
+.floatingHeader {
+  position: fixed;
+  top: var(--margin-page);
+  left: var(--margin-page);
+  right: var(--margin-page);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .introductionSection {
-  min-height: 100vh;
+  min-height: 20vh;
   margin-bottom: 0;
   position: sticky;
   top: var(--margin-page);
@@ -78,10 +89,41 @@
 .galleryOverlayInner {
   width: 100%;
   max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--margin-page);
 }
 
 .galleryOverlayClose {
-  margin-bottom: var(--margin-3);
+  text-transform: lowercase;
+}
+
+.galleryOverlayNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--margin-page);
+}
+
+.galleryOverlayNavLeft,
+.galleryOverlayClose,
+.galleryOverlayNavRight {
+  pointer-events: all;
+}
+
+.galleryOverlayNavLeft {
+  min-width: 80px;
+  text-align: left;
+}
+
+.galleryOverlayNavRight {
+  min-width: 240px;
+  text-align: right;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--margin-3);
 }
 
 /* Tablets, iPads */

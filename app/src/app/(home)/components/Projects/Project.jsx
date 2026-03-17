@@ -14,6 +14,7 @@ const Project = ({ project }) => {
 
   const [isHovering, setIsHovering] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
   if (!project) return;
 
@@ -22,6 +23,10 @@ const Project = ({ project }) => {
     setCursorPosition({
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top,
+    });
+    setContainerSize({
+      width: bounds.width,
+      height: bounds.height,
     });
   };
 
@@ -52,6 +57,7 @@ const Project = ({ project }) => {
         handleInfo={handleInfo}
         showInfo={showInfo}
         hideTitle={isInfoPanelHovered}
+        containerSize={containerSize}
       />
 
       <div className={styles.projectStage}>
