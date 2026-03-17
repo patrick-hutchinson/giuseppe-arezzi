@@ -113,9 +113,9 @@ button:visited {
 }
 
 a {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4.5px;
+  /* text-decoration: underline; */
+  /* text-decoration-thickness: 1px; */
+  /* text-underline-offset: 4.5px; */
 }
 
 a:hover {

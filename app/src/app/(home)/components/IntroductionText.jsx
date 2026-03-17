@@ -5,6 +5,7 @@ import Text from "@/components/Text/Text";
 import styles from "../Home.module.css";
 
 const INTRO_PROJECT_GAP = 100;
+const INTRO_FIXED_WORDS = 2;
 
 const countPortableTextCharacters = (blocks = []) => {
   return blocks.reduce((count, block) => {
@@ -15,6 +16,29 @@ const countPortableTextCharacters = (blocks = []) => {
       block.children.reduce((childCount, child) => childCount + (child?.text?.length || 0), 0)
     );
   }, 0);
+};
+
+const getPortableTextContent = (blocks = []) => {
+  return blocks.reduce((result, block) => {
+    if (block?._type !== "block" || !Array.isArray(block.children)) return result;
+    return (
+      result +
+      block.children.reduce((childText, child) => childText + (child?.text || ""), "")
+    );
+  }, "");
+};
+
+const getFixedPrefixCharacters = (blocks = [], wordsToKeep = 0) => {
+  if (wordsToKeep <= 0) return 0;
+  const content = getPortableTextContent(blocks);
+  if (!content) return 0;
+
+  const words = [...content.matchAll(/\S+/g)];
+  if (!words.length) return 0;
+  if (words.length <= wordsToKeep) return content.length;
+
+  const targetWord = words[wordsToKeep - 1];
+  return targetWord.index + targetWord[0].length;
 };
 
 const truncatePortableText = (blocks = [], maxCharacters = 0) => {
@@ -66,6 +90,11 @@ const IntroductionText = ({ text, projectsBoundaryRef }) => {
     () => countPortableTextCharacters(introduction),
     [introduction]
   );
+  const fixedPrefixCharacters = useMemo(
+    () => getFixedPrefixCharacters(introduction, INTRO_FIXED_WORDS),
+    [introduction]
+  );
+  const dynamicIntroCharacters = Math.max(0, totalIntroCharacters - fixedPrefixCharacters);
   const introMeasurementRef = useRef(null);
   const [visibleCharacters, setVisibleCharacters] = useState(totalIntroCharacters);
 
@@ -89,7 +118,8 @@ const IntroductionText = ({ text, projectsBoundaryRef }) => {
 
       const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP);
       const clampedRatio = Math.max(0, Math.min(1, availableHeight / measurementHeight));
-      const nextVisibleCharacters = Math.floor(totalIntroCharacters * clampedRatio);
+      const nextVisibleCharacters =
+        fixedPrefixCharacters + Math.floor(dynamicIntroCharacters * clampedRatio);
 
       setVisibleCharacters((currentVisibleCharacters) => {
         if (currentVisibleCharacters === nextVisibleCharacters) return currentVisibleCharacters;
@@ -119,7 +149,7 @@ const IntroductionText = ({ text, projectsBoundaryRef }) => {
       if (frameId !== null) window.cancelAnimationFrame(frameId);
       if (resizeObserver) resizeObserver.disconnect();
     };
-  }, [projectsBoundaryRef, totalIntroCharacters]);
+  }, [dynamicIntroCharacters, fixedPrefixCharacters, projectsBoundaryRef, totalIntroCharacters]);
 
   const introText = useMemo(
     () => truncatePortableText(introduction, visibleCharacters),

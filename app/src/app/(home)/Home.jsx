@@ -16,7 +16,6 @@ import Media from "@/components/Media/Media";
 import Carousel from "@/components/Carousel/Carousel";
 
 export default function HomePage({ site, home, projects }) {
-  const introductionSectionRef = useRef(null);
   const projectsSectionRef = useRef(null);
   const [hoveredPrintImage, setHoveredPrintImage] = useState(null);
   const [activePrintIndex, setActivePrintIndex] = useState(null);
@@ -103,15 +102,16 @@ export default function HomePage({ site, home, projects }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // transition={{ duration: 0.22, ease: "easeOut" }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
           >
-            <span>Giuseppe Arezzi</span>
-            <a href={`mailto:${site?.email || ""}`}>Contact</a>
+            <a href={`mailto:${site?.email || ""}`} className={styles.floatingHeaderContact}>
+              Contact
+            </a>
           </motion.header>
         ) : null}
       </AnimatePresence>
 
-      <Section ref={introductionSectionRef} className={styles.introductionSection}>
+      <Section className={styles.introductionSection}>
         <IntroductionText text={home?.introduction} projectsBoundaryRef={projectsSectionRef} />
       </Section>
 
