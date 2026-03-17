@@ -1,6 +1,6 @@
 import NextImage from "next/image";
 
-const Image = ({ medium, setIsLoaded, eager = false }) => {
+const Image = ({ medium, setIsLoaded, eager = false, contain = false }) => {
   const imageSource = medium.url;
 
   const resolutionWidth = medium.width;
@@ -31,7 +31,7 @@ const Image = ({ medium, setIsLoaded, eager = false }) => {
           height: "100%",
           left: 0,
           top: 0,
-          objectFit: "cover",
+          objectFit: contain ?? "cover",
           objectPosition: "center",
         }}
         onLoad={() => {

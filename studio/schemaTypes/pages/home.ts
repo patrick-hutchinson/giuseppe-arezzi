@@ -44,6 +44,31 @@ export const home = defineType({
             {name: 'gallery', type: 'gallery'},
             {name: 'url', type: 'string'},
           ],
+          preview: {
+            select: {
+              title: 'title',
+              gallery: 'gallery',
+              url: 'url',
+            },
+            prepare({title, gallery, url}) {
+              const mediaCount = gallery?.length || 0
+
+              let subtitle = ''
+
+              if (mediaCount > 0) {
+                subtitle += `${mediaCount} media`
+              }
+
+              if (url) {
+                subtitle += mediaCount ? ` • ${url}` : url
+              }
+
+              return {
+                title: title || 'Untitled',
+                subtitle,
+              }
+            },
+          },
         },
       ],
     }),

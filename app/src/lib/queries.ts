@@ -16,7 +16,11 @@ export const homeQuery = `*[_type=="home"][0]{
   acquisitions,
   clients,
   web,
-  print[],
+  print[]{
+    title,
+    url,
+    gallery[] ${mediaAssetFragment}
+  },
   collaborators
 }`;
 
