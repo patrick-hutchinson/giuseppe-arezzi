@@ -27,11 +27,11 @@ export const imageAsset = defineType({
       title: 'Alt Text',
       name: 'altText',
       type: 'string',
-      description: 'Wichtig für SEO and Barrierefreiheit',
+      description: 'Importante per SEO e accessibilità',
     }),
     defineField({
       title: 'Copyright',
-      description: 'Copyright text hier einfügen',
+      description: 'Inserisci qui il testo del copyright',
       name: 'copyright',
       type: 'string',
     }),
@@ -45,13 +45,13 @@ export const imageAsset = defineType({
       size: 'file.asset.size',
     },
     prepare({file, altText, copyright, uploadedAt, size}) {
-      const title = altText?.trim() || 'Image'
-      const subtitleParts = [copyright?.trim() || `Uploaded ${formatDate(uploadedAt)}`]
+      const title = altText?.trim() || 'Immagine'
+      const subtitleParts = [copyright?.trim() || `Caricato ${formatDate(uploadedAt)}`]
       const sizeLabel = formatMegabytes(size)
 
       if (sizeLabel) subtitleParts.push(sizeLabel)
       if (typeof size === 'number' && size > 2 * 1024 * 1024) {
-        subtitleParts.push('⚠️ Try to keep the file below 2MB!')
+        subtitleParts.push('⚠️ File sotto 2 MB')
       }
 
       const subtitle = subtitleParts.join(' • ')

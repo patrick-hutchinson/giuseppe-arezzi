@@ -19,43 +19,37 @@ export const home = defineType({
     }),
     defineField({
       name: 'awards',
-      type: 'object',
-      fields: [
-        {name: 'year', type: 'string'},
-        {name: 'text', type: 'string'},
-      ],
+      type: 'portableText',
     }),
     defineField({
       name: 'acquisitions',
-      type: 'object',
-      fields: [
-        {name: 'year', type: 'string'},
-        {name: 'text', type: 'string'},
-      ],
+      type: 'portableText',
     }),
     defineField({
       name: 'clients',
-      title: 'Clients',
+      type: 'portableText',
+    }),
+    defineField({
+      name: 'collaborators',
       type: 'portableText',
     }),
     defineField({
       name: 'print',
-      title: 'Print',
-      type: 'object',
-      fields: [
-        {name: 'title', type: 'string'},
-        {name: 'media', type: 'mediaAsset'},
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {name: 'title', type: 'string'},
+            {name: 'gallery', type: 'gallery'},
+            {name: 'url', type: 'string'},
+          ],
+        },
       ],
     }),
     defineField({
       name: 'web',
-      title: 'Web',
-      type: 'object',
-      fields: [
-        {name: 'title', type: 'string'},
-        {name: 'media', type: 'mediaAsset'},
-        {name: 'url', type: 'string'},
-      ],
+      type: 'portableText',
     }),
   ],
   preview: {

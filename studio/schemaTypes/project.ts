@@ -26,7 +26,7 @@ export const project = defineType({
     defineField({
       name: 'gallery',
       type: 'gallery',
-      description: 'Diese Bilder werden in voller Bildschirmhöhe unterhalb der Comments angezeigt,',
+      description: 'Queste immagini verranno mostrate a tutta altezza dello schermo sotto i commenti.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -46,7 +46,7 @@ export const project = defineType({
                 layout: 'tags',
               },
               description:
-                '⚠️ Festival Namen hinzufügen und dann ENTER dücken, sodass die Eingabe als Tag auftaucht.',
+                "⚠️ Aggiungi i nomi dei festival e poi premi INVIO, così l'inserimento comparirà come tag.",
             }),
           ],
         },

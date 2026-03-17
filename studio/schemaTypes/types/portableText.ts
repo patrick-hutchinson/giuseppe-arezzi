@@ -14,7 +14,10 @@ export const portableText = defineType({
         {title: 'Numbered', value: 'number'},
       ],
       marks: {
-        decorators: [{title: 'Emphasis', value: 'em'}],
+        decorators: [
+          {title: 'Emphasis', value: 'em'},
+          {title: 'Strong', value: 'strong'},
+        ],
         annotations: [
           {
             name: 'link',

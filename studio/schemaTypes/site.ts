@@ -16,7 +16,7 @@ export const site = defineType({
       title: 'Google Search Description',
       type: 'string',
       description:
-        'This text will be displayed under the website link in the Google search results.',
+        'Questo testo verrà mostrato sotto il link del sito nei risultati di ricerca di Google.',
     }),
 
     defineField({

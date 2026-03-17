@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import styles from "./Projects.module.css";
 
+import Text from "@/components/Text/Text";
 import Carousel from "@/components/Carousel/Carousel";
 import ProjectHeader from "./ProjectHeader";
+import ProjectDescription from "./ProjectDescription";
 
 const Project = ({ project }) => {
   const [showInfo, setShowInfo] = useState(false);
@@ -48,7 +51,18 @@ const Project = ({ project }) => {
         handleInfo={handleInfo}
         showInfo={showInfo}
       />
-      <Carousel array={project.gallery} />
+
+      <div className={styles.projectStage}>
+        <ProjectDescription project={project} showInfo={showInfo} />
+
+        <motion.div
+          className={styles.projectCarouselWrap}
+          animate={{ x: showInfo ? "25vw" : "0vw" }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Carousel array={project.gallery} />
+        </motion.div>
+      </div>
     </div>
   );
 };

@@ -21,14 +21,16 @@ export const videoAsset = defineType({
       },
     }),
     defineField({
-      title: 'Alt Text (Wichtig für SEO and Barrierefreiheit)',
+      title: 'Alt Text',
       name: 'altText',
       type: 'string',
+      description: 'Importante per SEO e accessibilità',
     }),
     defineField({
       name: 'copyright',
       title: 'Copyright',
       type: 'string',
+      description: 'Inserisci qui il testo del copyright',
     }),
   ],
   preview: {
@@ -39,8 +41,8 @@ export const videoAsset = defineType({
       uploadedAt: 'file.asset._createdAt',
     },
     prepare({file, altText, copyright, uploadedAt}) {
-      const title = altText?.trim() || 'image'
-      const subtitle = copyright?.trim() || `Uploaded ${formatDate(uploadedAt)}`
+      const title = altText?.trim() || 'Video'
+      const subtitle = copyright?.trim() || `Caricato ${formatDate(uploadedAt)}`
 
       return {
         title,
