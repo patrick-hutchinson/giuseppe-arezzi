@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import styles from "./Projects.module.css";
 
 const CURSOR_OFFSET = 12;
 
-const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showInfo }) => {
+const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showInfo, hideTitle }) => {
+  const [isToggleHovered, setIsToggleHovered] = useState(false);
+  const shouldHideTitle = hideTitle || isToggleHovered;
   const targetX = isHovering ? cursorPosition.x + CURSOR_OFFSET : 0;
   const targetY = isHovering ? cursorPosition.y + CURSOR_OFFSET : 0;
 
@@ -19,6 +22,8 @@ const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showIn
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
             onClick={handleInfo}
+            onMouseEnter={() => setIsToggleHovered(true)}
+            onMouseLeave={() => setIsToggleHovered(false)}
           >
             {showInfo ? "-" : "+"}
           </motion.button>
@@ -28,12 +33,21 @@ const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showIn
       <motion.div
         className={styles.projectHeader}
         initial={false}
-        animate={{ x: targetX, y: targetY }}
+        animate={{ opacity: shouldHideTitle ? 0 : 1, x: targetX, y: targetY }}
         transition={{
-          type: "spring",
-          stiffness: isHovering ? 540 : 260,
-          damping: isHovering ? 44 : 28,
-          mass: isHovering ? 0.35 : 0.7,
+          opacity: { duration: 0.18, ease: "easeOut" },
+          x: {
+            type: "spring",
+            stiffness: isHovering ? 540 : 260,
+            damping: isHovering ? 44 : 28,
+            mass: isHovering ? 0.35 : 0.7,
+          },
+          y: {
+            type: "spring",
+            stiffness: isHovering ? 540 : 260,
+            damping: isHovering ? 44 : 28,
+            mass: isHovering ? 0.35 : 0.7,
+          },
         }}
       >
         {project.title}, Edition {project.edition}, {project.year}

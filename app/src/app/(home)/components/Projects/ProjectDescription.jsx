@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import styles from "./Projects.module.css";
 
-const ProjectDescription = ({ project, showInfo }) => {
+const ProjectDescription = ({ project, showInfo, onHoverStart, onHoverEnd }) => {
   return (
     <AnimatePresence>
       {showInfo && (
@@ -13,6 +13,8 @@ const ProjectDescription = ({ project, showInfo }) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "-100%", opacity: 0 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          onMouseEnter={onHoverStart}
+          onMouseLeave={onHoverEnd}
         >
           {project.description ? <Text text={project.description} className={styles.projectDescription} /> : null}
           <br />

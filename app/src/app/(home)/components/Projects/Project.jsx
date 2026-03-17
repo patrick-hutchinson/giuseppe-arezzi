@@ -10,6 +10,7 @@ import ProjectDescription from "./ProjectDescription";
 
 const Project = ({ project }) => {
   const [showInfo, setShowInfo] = useState(false);
+  const [isInfoPanelHovered, setIsInfoPanelHovered] = useState(false);
 
   const [isHovering, setIsHovering] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -50,10 +51,16 @@ const Project = ({ project }) => {
         cursorPosition={cursorPosition}
         handleInfo={handleInfo}
         showInfo={showInfo}
+        hideTitle={isInfoPanelHovered}
       />
 
       <div className={styles.projectStage}>
-        <ProjectDescription project={project} showInfo={showInfo} />
+        <ProjectDescription
+          project={project}
+          showInfo={showInfo}
+          onHoverStart={() => setIsInfoPanelHovered(true)}
+          onHoverEnd={() => setIsInfoPanelHovered(false)}
+        />
 
         <motion.div
           className={styles.projectCarouselWrap}
