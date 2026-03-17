@@ -13,12 +13,27 @@
   background: blue;
 }
 
+.projectHeaderLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
 .projectHeader {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 3;
   padding: var(--margin-page);
-  pointer-events: none;
   will-change: transform;
+}
+
+button.toggleInfo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: var(--margin-page);
+  z-index: 10;
+  cursor: pointer;
+  pointer-events: all;
 }

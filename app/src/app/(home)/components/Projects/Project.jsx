@@ -6,6 +6,8 @@ import Carousel from "@/components/Carousel/Carousel";
 import ProjectHeader from "./ProjectHeader";
 
 const Project = ({ project }) => {
+  const [showInfo, setShowInfo] = useState(false);
+
   const [isHovering, setIsHovering] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
@@ -28,6 +30,10 @@ const Project = ({ project }) => {
     setIsHovering(false);
   };
 
+  const handleInfo = () => {
+    setShowInfo((prev) => !prev);
+  };
+
   return (
     <div
       className={styles.project}
@@ -35,7 +41,13 @@ const Project = ({ project }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <ProjectHeader project={project} isHovering={isHovering} cursorPosition={cursorPosition} />
+      <ProjectHeader
+        project={project}
+        isHovering={isHovering}
+        cursorPosition={cursorPosition}
+        handleInfo={handleInfo}
+        showInfo={showInfo}
+      />
       <Carousel array={project.gallery} />
     </div>
   );
