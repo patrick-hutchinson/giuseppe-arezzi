@@ -15,7 +15,8 @@ const Carousel = ({ array, onIndexChange }) => {
   if (!array) return;
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragResistance: 1, dragFree: isTouch ? true : false }, []);
   const rootRef = useRef(null);
-  const lastWheelNavigationAtRef = useRef(0);
+  const wheelGestureLockedRef = useRef(false);
+  const wheelGestureReleaseTimeoutRef = useRef(null);
   const carouselIdRef = useRef(
     `carousel-${Date.now()}-${Math.random().toString(16).slice(2)}`
   );
@@ -119,6 +120,14 @@ const Carousel = ({ array, onIndexChange }) => {
     };
   }, [emblaApi]);
 
+  useEffect(() => {
+    return () => {
+      if (wheelGestureReleaseTimeoutRef.current) {
+        window.clearTimeout(wheelGestureReleaseTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleWheel = (event) => {
     if (!emblaApi) return;
     if (!isTopVisibleCarousel()) return;
@@ -130,11 +139,20 @@ const Carousel = ({ array, onIndexChange }) => {
 
     if (!isHorizontalIntent && !isShiftHorizontalIntent) return;
 
-    const now = performance.now();
-    if (now - lastWheelNavigationAtRef.current < 220) return;
-    lastWheelNavigationAtRef.current = now;
-
     event.preventDefault();
+
+    if (wheelGestureReleaseTimeoutRef.current) {
+      window.clearTimeout(wheelGestureReleaseTimeoutRef.current);
+    }
+
+    wheelGestureReleaseTimeoutRef.current = window.setTimeout(() => {
+      wheelGestureLockedRef.current = false;
+      wheelGestureReleaseTimeoutRef.current = null;
+    }, 180);
+
+    if (wheelGestureLockedRef.current) return;
+    wheelGestureLockedRef.current = true;
+
     const wheelDelta = isHorizontalIntent ? event.deltaX : event.deltaY;
     if (wheelDelta > 0) {
       emblaApi.scrollNext();

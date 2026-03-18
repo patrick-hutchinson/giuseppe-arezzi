@@ -66,6 +66,21 @@ export default function HomePage({ site, home, projects }) {
   };
 
   useEffect(() => {
+    if (activePrintIndex === null) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      setActivePrintIndex(null);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activePrintIndex]);
+
+  useEffect(() => {
     let frameId = null;
 
     const updateHeaderVisibility = () => {
