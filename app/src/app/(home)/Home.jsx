@@ -15,8 +15,14 @@ import { PortableText } from "@portabletext/react";
 import Media from "@/components/Media/Media";
 import Carousel from "@/components/Carousel/Carousel";
 
+const getWrappedIndex = (index, length) => {
+  if (!length) return 0;
+  return ((index % length) + length) % length;
+};
+
 export default function HomePage({ site, home, projects }) {
   const projectsSectionRef = useRef(null);
+  const awardsSectionRef = useRef(null);
   const [hoveredPrintImage, setHoveredPrintImage] = useState(null);
   const [activePrintIndex, setActivePrintIndex] = useState(null);
   const [showFloatingHeader, setShowFloatingHeader] = useState(false);
@@ -28,9 +34,21 @@ export default function HomePage({ site, home, projects }) {
     [home?.print],
   );
 
-  const hasActivePrint = activePrintIndex !== null && activePrintIndex >= 0;
-  const activePrint = hasActivePrint ? printItemsWithGallery[activePrintIndex] : null;
+  const galleryCount = printItemsWithGallery.length;
+  const normalizedActivePrintIndex =
+    activePrintIndex === null || galleryCount === 0
+      ? null
+      : getWrappedIndex(activePrintIndex, galleryCount);
+
+  const hasActivePrint = normalizedActivePrintIndex !== null;
+  const activePrint = hasActivePrint ? printItemsWithGallery[normalizedActivePrintIndex] : null;
   const activeGallery = activePrint?.gallery || null;
+  const previousPrintIndex = hasActivePrint
+    ? getWrappedIndex(normalizedActivePrintIndex - 1, galleryCount)
+    : null;
+  const nextPrintIndex = hasActivePrint
+    ? getWrappedIndex(normalizedActivePrintIndex + 1, galleryCount)
+    : null;
 
   const handlePrintHoverStart = (printItem) => {
     const firstGalleryItem = printItem?.gallery?.[0];
@@ -54,16 +72,26 @@ export default function HomePage({ site, home, projects }) {
   };
 
   const openPreviousPrintGallery = () => {
-    if (!printItemsWithGallery.length || activePrintIndex === null) return;
-    const previousIndex = (activePrintIndex - 1 + printItemsWithGallery.length) % printItemsWithGallery.length;
-    setActivePrintIndex(previousIndex);
+    setActivePrintIndex((currentIndex) => {
+      if (currentIndex === null || galleryCount === 0) return currentIndex;
+      return getWrappedIndex(currentIndex - 1, galleryCount);
+    });
   };
 
   const openNextPrintGallery = () => {
-    if (!printItemsWithGallery.length || activePrintIndex === null) return;
-    const nextIndex = (activePrintIndex + 1) % printItemsWithGallery.length;
-    setActivePrintIndex(nextIndex);
+    setActivePrintIndex((currentIndex) => {
+      if (currentIndex === null || galleryCount === 0) return currentIndex;
+      return getWrappedIndex(currentIndex + 1, galleryCount);
+    });
   };
+
+  useEffect(() => {
+    if (activePrintIndex === null || galleryCount === 0) return;
+    const wrappedIndex = getWrappedIndex(activePrintIndex, galleryCount);
+    if (wrappedIndex !== activePrintIndex) {
+      setActivePrintIndex(wrappedIndex);
+    }
+  }, [activePrintIndex, galleryCount]);
 
   useEffect(() => {
     if (activePrintIndex === null) return;
@@ -139,6 +167,7 @@ export default function HomePage({ site, home, projects }) {
           text={home?.introduction}
           projectsBoundaryRef={projectsSectionRef}
           headerVisible={showFloatingHeader}
+          awardsBoundaryRef={awardsSectionRef}
         />
       </Section>
 
@@ -169,7 +198,7 @@ export default function HomePage({ site, home, projects }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.22, ease: "easeOut" }}
               >
-                <div>
+                <div ref={awardsSectionRef}>
                   <div typo="bold">Awards</div>
                   <Text text={home.awards} />
                 </div>
@@ -263,17 +292,18 @@ export default function HomePage({ site, home, projects }) {
               <Carousel array={activeGallery} />
 
               <div className={styles.galleryOverlayNavigation}>
-                <button className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
-                  ←
+                <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
+                  <span typo="bold">←</span>
+                  <span>{printItemsWithGallery[previousPrintIndex]?.title}</span>
                 </button>
 
-                <button className={styles.galleryOverlayClose} onClick={closeGalleryOverlay}>
+                <button type="button" className={styles.galleryOverlayClose} onClick={closeGalleryOverlay} typo="bold">
                   x
                 </button>
 
-                <button className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
-                  <span>{printItemsWithGallery[(activePrintIndex + 1) % printItemsWithGallery.length]?.title}</span>
-                  <span>→</span>
+                <button type="button" className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
+                  <span>{printItemsWithGallery[nextPrintIndex]?.title}</span>
+                  <span typo="bold">→</span>
                 </button>
               </div>
             </motion.div>

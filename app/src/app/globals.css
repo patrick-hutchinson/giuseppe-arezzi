@@ -4,7 +4,7 @@
 
   --margin-page: 16px;
   --margin-1: 120px;
-  --margin-2: 60px;
+  --margin-2: 40px;
   --margin-3: 8px;
 
   --content-vh: calc(100vh - (2 * (var(--margin-page))));

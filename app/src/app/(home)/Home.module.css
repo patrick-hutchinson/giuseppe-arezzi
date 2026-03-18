@@ -118,11 +118,15 @@
 }
 
 .galleryOverlayNavigation {
+  position: fixed;
+  left: var(--margin-page);
+  right: var(--margin-page);
+  bottom: var(--margin-page);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  gap: var(--margin-page);
+  gap: var(--margin-2);
+  pointer-events: none;
 }
 
 .galleryOverlayNavLeft,
@@ -132,8 +136,11 @@
 }
 
 .galleryOverlayNavLeft {
-  min-width: 80px;
+  min-width: 200px;
   text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--margin-3);
 }
 
 .galleryOverlayNavRight {
@@ -145,15 +152,28 @@
   gap: var(--margin-3);
 }
 
+.galleryOverlayClose {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .galleryOverlayInner :global(.embla__slide) {
   height: 90vh !important;
+}
+
+main section:last-of-type {
+  margin-bottom: 0 !important;
 }
 
 /* Tablets, iPads */
 @media screen and (min-width: 769px) {
   .publicitySection {
     display: grid;
-    grid-template-columns: 50% 25% 25%;
+    grid-template-columns:
+      calc(50% - var(--margin-page) * 2 / 4)
+      calc(25% - var(--margin-page) * 2 / 4)
+      calc(25% - var(--margin-page) * 2 / 4);
     grid-template-rows: auto;
     align-items: start;
     column-gap: var(--margin-page);

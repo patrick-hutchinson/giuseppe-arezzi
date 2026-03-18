@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 import Text from "@/components/Text/Text";
 
@@ -11,20 +12,14 @@ const countPortableTextCharacters = (blocks = []) => {
   return blocks.reduce((count, block) => {
     if (block?._type !== "block" || !Array.isArray(block.children)) return count;
 
-    return (
-      count +
-      block.children.reduce((childCount, child) => childCount + (child?.text?.length || 0), 0)
-    );
+    return count + block.children.reduce((childCount, child) => childCount + (child?.text?.length || 0), 0);
   }, 0);
 };
 
 const getPortableTextContent = (blocks = []) => {
   return blocks.reduce((result, block) => {
     if (block?._type !== "block" || !Array.isArray(block.children)) return result;
-    return (
-      result +
-      block.children.reduce((childText, child) => childText + (child?.text || ""), "")
-    );
+    return result + block.children.reduce((childText, child) => childText + (child?.text || ""), "");
   }, "");
 };
 
@@ -129,23 +124,18 @@ const truncatePortableText = (blocks = [], maxCharacters = 0) => {
   return nextBlocks;
 };
 
-const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false }) => {
+const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, awardsBoundaryRef }) => {
   const introduction = text || [];
-  const totalIntroCharacters = useMemo(
-    () => countPortableTextCharacters(introduction),
-    [introduction]
-  );
-  const fixedPrefixCharacters = useMemo(
-    () => getFixedPrefixCharacters(introduction, INTRO_FIXED_WORDS),
-    [introduction]
-  );
+  const totalIntroCharacters = useMemo(() => countPortableTextCharacters(introduction), [introduction]);
+  const fixedPrefixCharacters = useMemo(() => getFixedPrefixCharacters(introduction, INTRO_FIXED_WORDS), [introduction]);
   const dynamicIntroCharacters = Math.max(0, totalIntroCharacters - fixedPrefixCharacters);
   const fixedPrefixText = useMemo(
     () => getPortableTextContent(introduction).slice(0, fixedPrefixCharacters),
-    [fixedPrefixCharacters, introduction]
+    [fixedPrefixCharacters, introduction],
   );
   const introMeasurementRef = useRef(null);
   const [visibleCharacters, setVisibleCharacters] = useState(totalIntroCharacters);
+  const [fadeIntroductionOut, setFadeIntroductionOut] = useState(false);
 
   useEffect(() => {
     setVisibleCharacters(totalIntroCharacters);
@@ -167,8 +157,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false }) 
 
       const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP);
       const clampedRatio = Math.max(0, Math.min(1, availableHeight / measurementHeight));
-      const nextVisibleCharacters =
-        fixedPrefixCharacters + Math.floor(dynamicIntroCharacters * clampedRatio);
+      const nextVisibleCharacters = fixedPrefixCharacters + Math.floor(dynamicIntroCharacters * clampedRatio);
 
       setVisibleCharacters((currentVisibleCharacters) => {
         if (currentVisibleCharacters === nextVisibleCharacters) return currentVisibleCharacters;
@@ -200,27 +189,55 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false }) 
     };
   }, [dynamicIntroCharacters, fixedPrefixCharacters, projectsBoundaryRef, totalIntroCharacters]);
 
-  const introText = useMemo(
-    () => truncatePortableText(introduction, visibleCharacters),
-    [introduction, visibleCharacters]
-  );
+  useEffect(() => {
+    let frameId = null;
+
+    const updateFadeState = () => {
+      frameId = null;
+      const awardsTop = awardsBoundaryRef?.current?.getBoundingClientRect()?.top;
+      if (typeof awardsTop !== "number") return;
+
+      const marginPage = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--margin-page"));
+      const topThreshold = (Number.isFinite(marginPage) ? marginPage : 0) + 50;
+      setFadeIntroductionOut(awardsTop <= topThreshold);
+    };
+
+    const requestUpdate = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(updateFadeState);
+    };
+
+    requestUpdate();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
+  }, [awardsBoundaryRef]);
+
+  const introText = useMemo(() => truncatePortableText(introduction, visibleCharacters), [introduction, visibleCharacters]);
   const introTextWithoutPrefix = useMemo(
     () => stripPortableTextPrefix(introText, fixedPrefixCharacters),
-    [fixedPrefixCharacters, introText]
+    [fixedPrefixCharacters, introText],
   );
 
   return (
     <>
-      {headerVisible ? (
-        <div className={styles.introductionTextWithPrefix}>
-          <span className={styles.introductionPrefixBold} typo="bold">
-            {fixedPrefixText}
-          </span>
-          <Text text={introTextWithoutPrefix} className={styles.introductionTextInline} />
-        </div>
-      ) : (
-        <Text text={introText} className={styles.introductionText} />
-      )}
+      <motion.div animate={{ opacity: fadeIntroductionOut ? 0 : 1 }} transition={{ duration: 0.2, ease: "easeOut" }}>
+        {headerVisible ? (
+          <div className={styles.introductionTextWithPrefix}>
+            <span className={styles.introductionPrefixBold} typo="bold">
+              {fixedPrefixText}
+            </span>
+            <Text text={introTextWithoutPrefix} className={styles.introductionTextInline} />
+          </div>
+        ) : (
+          <Text text={introText} className={styles.introductionText} />
+        )}
+      </motion.div>
       <div className={styles.introductionMeasure} aria-hidden="true" ref={introMeasurementRef}>
         <Text text={introduction} className={styles.introductionText} />
       </div>
