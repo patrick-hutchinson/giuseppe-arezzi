@@ -31,6 +31,20 @@
   white-space: pre-wrap;
 }
 
+.introductionTextWithPrefix {
+  display: flex;
+  align-items: flex-start;
+}
+
+.introductionPrefixBold {
+  flex-shrink: 0;
+  margin-right: 0.25ch;
+}
+
+.introductionTextInline {
+  white-space: pre-wrap;
+}
+
 .introductionMeasure {
   position: absolute;
   inset: 0 0 auto 0;
@@ -131,6 +145,10 @@
   gap: var(--margin-3);
 }
 
+.galleryOverlayInner :global(.embla__slide) {
+  height: 90vh !important;
+}
+
 /* Tablets, iPads */
 @media screen and (min-width: 769px) {
   .publicitySection {
@@ -138,7 +156,7 @@
     grid-template-columns: 50% 25% 25%;
     grid-template-rows: auto;
     align-items: start;
-    /* column-gap: var(--margin-2); */
+    column-gap: var(--margin-page);
   }
 
   .publicityColumn {

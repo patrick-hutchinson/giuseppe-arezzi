@@ -41,6 +41,51 @@ const getFixedPrefixCharacters = (blocks = [], wordsToKeep = 0) => {
   return targetWord.index + targetWord[0].length;
 };
 
+const stripPortableTextPrefix = (blocks = [], prefixCharacters = 0) => {
+  if (prefixCharacters <= 0) return blocks;
+
+  let remaining = prefixCharacters;
+  const nextBlocks = [];
+
+  for (const block of blocks) {
+    if (block?._type !== "block" || !Array.isArray(block.children)) continue;
+
+    const nextChildren = [];
+
+    for (const child of block.children) {
+      const childText = child?.text || "";
+      if (!childText.length) {
+        if (remaining <= 0) nextChildren.push(child);
+        continue;
+      }
+
+      if (remaining <= 0) {
+        nextChildren.push(child);
+        continue;
+      }
+
+      if (remaining >= childText.length) {
+        remaining -= childText.length;
+        continue;
+      }
+
+      nextChildren.push({
+        ...child,
+        text: childText.slice(remaining),
+      });
+      remaining = 0;
+    }
+
+    if (!nextChildren.length) continue;
+    nextBlocks.push({
+      ...block,
+      children: nextChildren,
+    });
+  }
+
+  return nextBlocks;
+};
+
 const truncatePortableText = (blocks = [], maxCharacters = 0) => {
   if (maxCharacters <= 0) return [];
 
@@ -84,7 +129,7 @@ const truncatePortableText = (blocks = [], maxCharacters = 0) => {
   return nextBlocks;
 };
 
-const IntroductionText = ({ text, projectsBoundaryRef }) => {
+const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false }) => {
   const introduction = text || [];
   const totalIntroCharacters = useMemo(
     () => countPortableTextCharacters(introduction),
@@ -95,6 +140,10 @@ const IntroductionText = ({ text, projectsBoundaryRef }) => {
     [introduction]
   );
   const dynamicIntroCharacters = Math.max(0, totalIntroCharacters - fixedPrefixCharacters);
+  const fixedPrefixText = useMemo(
+    () => getPortableTextContent(introduction).slice(0, fixedPrefixCharacters),
+    [fixedPrefixCharacters, introduction]
+  );
   const introMeasurementRef = useRef(null);
   const [visibleCharacters, setVisibleCharacters] = useState(totalIntroCharacters);
 
@@ -155,10 +204,23 @@ const IntroductionText = ({ text, projectsBoundaryRef }) => {
     () => truncatePortableText(introduction, visibleCharacters),
     [introduction, visibleCharacters]
   );
+  const introTextWithoutPrefix = useMemo(
+    () => stripPortableTextPrefix(introText, fixedPrefixCharacters),
+    [fixedPrefixCharacters, introText]
+  );
 
   return (
     <>
-      <Text text={introText} className={styles.introductionText} />
+      {headerVisible ? (
+        <div className={styles.introductionTextWithPrefix}>
+          <span className={styles.introductionPrefixBold} typo="bold">
+            {fixedPrefixText}
+          </span>
+          <Text text={introTextWithoutPrefix} className={styles.introductionTextInline} />
+        </div>
+      ) : (
+        <Text text={introText} className={styles.introductionText} />
+      )}
       <div className={styles.introductionMeasure} aria-hidden="true" ref={introMeasurementRef}>
         <Text text={introduction} className={styles.introductionText} />
       </div>

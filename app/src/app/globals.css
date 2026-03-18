@@ -112,14 +112,12 @@ button:visited {
   transition: opacity 0.2s ease-in-out;
 }
 
-a {
-  /* text-decoration: underline; */
-  /* text-decoration-thickness: 1px; */
-  /* text-underline-offset: 4.5px; */
-}
-
 a:hover {
   opacity: 0.4;
+}
+
+header a:hover {
+  opacity: 1;
 }
 
 input,

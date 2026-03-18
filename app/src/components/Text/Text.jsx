@@ -7,6 +7,9 @@ const Text = ({ text, typo, className }) => {
         value={text}
         components={{
           marks: {
+            strong: ({ children }) => {
+              return <strong typo="bold">{children}</strong>;
+            },
             link: ({ value, children }) => {
               const href = value?.href || value?.link;
               return (

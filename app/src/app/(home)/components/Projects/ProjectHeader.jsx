@@ -7,15 +7,7 @@ const CURSOR_OFFSET = 12;
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-const ProjectHeader = ({
-  project,
-  isHovering,
-  cursorPosition,
-  handleInfo,
-  showInfo,
-  hideTitle,
-  containerSize,
-}) => {
+const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showInfo, hideTitle, containerSize }) => {
   const [isToggleHovered, setIsToggleHovered] = useState(false);
   const [headerSize, setHeaderSize] = useState({ width: 0, height: 0 });
   const headerRef = useRef(null);
@@ -51,7 +43,7 @@ const ProjectHeader = ({
   }
 
   return (
-    <div className={styles.projectHeaderLayer}>
+    <div className={styles.projectHeaderLayer} typo="bold">
       <AnimatePresence>
         {isHovering && (
           <motion.button

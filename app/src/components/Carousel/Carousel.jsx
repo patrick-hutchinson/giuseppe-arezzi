@@ -15,6 +15,7 @@ const Carousel = ({ array, onIndexChange }) => {
   if (!array) return;
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragResistance: 1, dragFree: isTouch ? true : false }, []);
   const rootRef = useRef(null);
+  const lastWheelNavigationAtRef = useRef(0);
   const carouselIdRef = useRef(
     `carousel-${Date.now()}-${Math.random().toString(16).slice(2)}`
   );
@@ -26,6 +27,35 @@ const Carousel = ({ array, onIndexChange }) => {
     },
     [emblaRef]
   );
+
+  const isTopVisibleCarousel = useCallback(() => {
+    const currentNode = rootRef.current;
+    if (!currentNode) return false;
+
+    const viewportCenter = window.innerHeight / 2;
+    const allCarousels = Array.from(document.querySelectorAll(".embla"));
+
+    const visibleCarousels = allCarousels.filter((node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.bottom > 0 && rect.top < window.innerHeight;
+    });
+
+    if (!visibleCarousels.length) return false;
+
+    const closestNode = visibleCarousels.reduce((closest, node) => {
+      const rect = node.getBoundingClientRect();
+      const nodeCenter = rect.top + rect.height / 2;
+      const distanceToCenter = Math.abs(nodeCenter - viewportCenter);
+
+      if (!closest || distanceToCenter < closest.distanceToCenter) {
+        return { node, distanceToCenter };
+      }
+
+      return closest;
+    }, null)?.node;
+
+    return closestNode === currentNode;
+  }, []);
 
   // Triple the date in case it is not long enough to fill the width of the screen
   const carouselMedia = [...array, ...array, ...array];
@@ -51,35 +81,6 @@ const Carousel = ({ array, onIndexChange }) => {
   useEffect(() => {
     if (!emblaApi) return;
 
-    const isTopVisibleCarousel = () => {
-      const currentNode = rootRef.current;
-      if (!currentNode) return false;
-
-      const viewportCenter = window.innerHeight / 2;
-      const allCarousels = Array.from(document.querySelectorAll(".embla"));
-
-      const visibleCarousels = allCarousels.filter((node) => {
-        const rect = node.getBoundingClientRect();
-        return rect.bottom > 0 && rect.top < window.innerHeight;
-      });
-
-      if (!visibleCarousels.length) return false;
-
-      const closestNode = visibleCarousels.reduce((closest, node) => {
-        const rect = node.getBoundingClientRect();
-        const nodeCenter = rect.top + rect.height / 2;
-        const distanceToCenter = Math.abs(nodeCenter - viewportCenter);
-
-        if (!closest || distanceToCenter < closest.distanceToCenter) {
-          return { node, distanceToCenter };
-        }
-
-        return closest;
-      }, null)?.node;
-
-      return closestNode === currentNode;
-    };
-
     const handleKeyDown = (e) => {
       if (!isTopVisibleCarousel()) return;
 
@@ -99,7 +100,7 @@ const Carousel = ({ array, onIndexChange }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [emblaApi]);
+  }, [emblaApi, isTopVisibleCarousel]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -118,11 +119,37 @@ const Carousel = ({ array, onIndexChange }) => {
     };
   }, [emblaApi]);
 
+  const handleWheel = (event) => {
+    if (!emblaApi) return;
+    if (!isTopVisibleCarousel()) return;
+
+    const absDeltaX = Math.abs(event.deltaX);
+    const absDeltaY = Math.abs(event.deltaY);
+    const isHorizontalIntent = absDeltaX > absDeltaY && absDeltaX > 8;
+    const isShiftHorizontalIntent = event.shiftKey && absDeltaY > 8;
+
+    if (!isHorizontalIntent && !isShiftHorizontalIntent) return;
+
+    const now = performance.now();
+    if (now - lastWheelNavigationAtRef.current < 220) return;
+    lastWheelNavigationAtRef.current = now;
+
+    event.preventDefault();
+    const wheelDelta = isHorizontalIntent ? event.deltaX : event.deltaY;
+    if (wheelDelta > 0) {
+      emblaApi.scrollNext();
+      return;
+    }
+
+    emblaApi.scrollPrev();
+  };
+
   return (
     <motion.div
       className={`${styles.carousel_outer} embla`}
       ref={setEmblaNode}
       data-carousel-id={carouselIdRef.current}
+      onWheel={handleWheel}
     >
       <div className={`${styles.carousel_inner} embla__container`}>
         {carouselMedia.map((item) => {

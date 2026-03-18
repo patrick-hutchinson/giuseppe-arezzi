@@ -7,7 +7,9 @@
 
 @font-face {
   font-family: "SaansRegular";
-  src: url("/fonts/Saans-Regular.woff2") format("woff2");
+  src:
+    url("/fonts/Saans-Regular.woff2") format("woff2"),
+    url("/fonts/Saans-Regular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -15,10 +17,22 @@
 
 @font-face {
   font-family: "SaansSemiBold";
-  src: url("/fonts/Saans-SemiBold.woff2") format("woff2");
+  src:
+    url("/fonts/Saans-SemiBold.woff2") format("woff2"),
+    url("/fonts/Saans-SemiBold.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+[typo="bold"],
+[typo="bold"] p {
+  font-family: "SaansSemiBold";
+}
+
+[typo="regular"],
+[typo="regular"] p {
+  font-family: "SaansRegular";
 }
 
 @media screen and (min-width: 320px) {

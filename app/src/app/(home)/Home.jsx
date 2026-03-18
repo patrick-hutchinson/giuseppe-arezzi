@@ -21,6 +21,8 @@ export default function HomePage({ site, home, projects }) {
   const [activePrintIndex, setActivePrintIndex] = useState(null);
   const [showFloatingHeader, setShowFloatingHeader] = useState(false);
 
+  const [isHoveringContact, setIsHoveringContact] = useState(false);
+
   const printItemsWithGallery = useMemo(
     () => (home?.print || []).filter((printItem) => Array.isArray(printItem?.gallery) && printItem.gallery.length > 0),
     [home?.print],
@@ -104,15 +106,25 @@ export default function HomePage({ site, home, projects }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
           >
-            <a href={`mailto:${site?.email || ""}`} className={styles.floatingHeaderContact}>
-              Contact
+            <a
+              href={`mailto:${site?.email || ""}`}
+              className={styles.floatingHeaderContact}
+              onMouseEnter={() => setIsHoveringContact(true)}
+              onMouseLeave={() => setIsHoveringContact(false)}
+              typo="bold"
+            >
+              {isHoveringContact ? site?.email : "Contact"}
             </a>
           </motion.header>
         ) : null}
       </AnimatePresence>
 
       <Section className={styles.introductionSection}>
-        <IntroductionText text={home?.introduction} projectsBoundaryRef={projectsSectionRef} />
+        <IntroductionText
+          text={home?.introduction}
+          projectsBoundaryRef={projectsSectionRef}
+          headerVisible={showFloatingHeader}
+        />
       </Section>
 
       <Section ref={projectsSectionRef}>
@@ -143,19 +155,19 @@ export default function HomePage({ site, home, projects }) {
                 transition={{ duration: 0.22, ease: "easeOut" }}
               >
                 <div>
-                  <strong>Awards</strong>
+                  <div typo="bold">Awards</div>
                   <Text text={home.awards} />
                 </div>
                 <div>
-                  <strong>Acquisitions</strong>
+                  <div typo="bold">Acquisitions</div>
                   <Text text={home.acquisitions} />
                 </div>
                 <div>
-                  <strong>Selected Clients</strong>
+                  <div typo="bold">Selected Clients</div>
                   <Text text={home.clients} />
                 </div>
                 <div>
-                  <strong>Past Collaborators</strong>
+                  <div typo="bold">Past Collaborators</div>
                   <Text text={home.collaborators} />
                 </div>
               </motion.div>
@@ -164,7 +176,7 @@ export default function HomePage({ site, home, projects }) {
         </div>
 
         <div className={`${styles.publicityPrint} ${styles.publicityColumn}`}>
-          <strong>Selected Print</strong>
+          <div typo="bold">Selected Print</div>
           <ul>
             {home.print?.map((printItem, index) => (
               <motion.li
@@ -185,7 +197,7 @@ export default function HomePage({ site, home, projects }) {
         </div>
 
         <div className={`${styles.publicityWeb} ${styles.publicityColumn}`}>
-          <strong>Selected Web</strong>
+          <div typo="bold">Selected Web</div>
 
           <PortableText
             value={home.web}
