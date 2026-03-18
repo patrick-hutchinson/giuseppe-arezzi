@@ -7,7 +7,17 @@ const CURSOR_OFFSET = 12;
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showInfo, hideTitle, containerSize }) => {
+const ProjectHeader = ({
+  project,
+  isHovering,
+  cursorPosition,
+  handleInfo,
+  showInfo,
+  hideTitle,
+  containerSize,
+  disableCursorFollow = false,
+}) => {
+  const isHoverActive = isHovering && !disableCursorFollow;
   const [isToggleHovered, setIsToggleHovered] = useState(false);
   const [headerSize, setHeaderSize] = useState({ width: 0, height: 0 });
   const headerRef = useRef(null);
@@ -32,7 +42,7 @@ const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showIn
   let targetX = 0;
   let targetY = 0;
 
-  if (isHovering) {
+  if (isHoverActive) {
     const rawX = cursorPosition.x + CURSOR_OFFSET;
     const rawY = cursorPosition.y + CURSOR_OFFSET;
     const maxX = Math.max(0, (containerSize?.width || 0) - headerSize.width);
@@ -45,7 +55,7 @@ const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showIn
   return (
     <div className={styles.projectHeaderLayer} typo="bold">
       <AnimatePresence>
-        {isHovering && (
+        {isHoverActive && (
           <motion.button
             className={styles.toggleInfo}
             initial={{ opacity: 0 }}
@@ -70,15 +80,15 @@ const ProjectHeader = ({ project, isHovering, cursorPosition, handleInfo, showIn
           opacity: { duration: 0.18, ease: "easeOut" },
           x: {
             type: "spring",
-            stiffness: isHovering ? 540 : 260,
-            damping: isHovering ? 44 : 28,
-            mass: isHovering ? 0.35 : 0.7,
+            stiffness: isHoverActive ? 540 : 260,
+            damping: isHoverActive ? 44 : 28,
+            mass: isHoverActive ? 0.35 : 0.7,
           },
           y: {
             type: "spring",
-            stiffness: isHovering ? 540 : 260,
-            damping: isHovering ? 44 : 28,
-            mass: isHovering ? 0.35 : 0.7,
+            stiffness: isHoverActive ? 540 : 260,
+            damping: isHoverActive ? 44 : 28,
+            mass: isHoverActive ? 0.35 : 0.7,
           },
         }}
       >

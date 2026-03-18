@@ -3,15 +3,15 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import styles from "./Projects.module.css";
 
-const ProjectDescription = ({ project, showInfo, onHoverStart, onHoverEnd }) => {
+const ProjectDescription = ({ project, showInfo, onHoverStart, onHoverEnd, isMobile = false }) => {
   return (
     <AnimatePresence>
       {showInfo && (
         <motion.aside
-          className={styles.projectInfo}
-          initial={{ x: "-100%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "-100%", opacity: 0 }}
+          className={`${styles.projectInfo} ${isMobile ? styles.projectInfoMobile : ""}`}
+          initial={isMobile ? { opacity: 0 } : { x: "-100%", opacity: 0 }}
+          animate={isMobile ? { opacity: 1 } : { x: 0, opacity: 1 }}
+          exit={isMobile ? { opacity: 0 } : { x: "-100%", opacity: 0 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           onMouseEnter={onHoverStart}
           onMouseLeave={onHoverEnd}

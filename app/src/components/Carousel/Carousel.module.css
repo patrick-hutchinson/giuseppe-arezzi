@@ -15,6 +15,13 @@
   cursor: grabbing !important;
 }
 
+.carouselStatic,
+.carouselStatic *,
+.carouselStatic:active,
+.carouselStatic:active * {
+  cursor: default !important;
+}
+
 .carousel_inner {
   display: flex;
   touch-action: pan-y pinch-zoom;

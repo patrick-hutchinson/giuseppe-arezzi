@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import styles from "./Home.module.css";
 
@@ -14,6 +14,7 @@ import Text from "@/components/Text/Text";
 import { PortableText } from "@portabletext/react";
 import Media from "@/components/Media/Media";
 import Carousel from "@/components/Carousel/Carousel";
+import { DeviceContext } from "@/context/DeviceContext";
 
 const getWrappedIndex = (index, length) => {
   if (!length) return 0;
@@ -21,6 +22,7 @@ const getWrappedIndex = (index, length) => {
 };
 
 export default function HomePage({ site, home, projects }) {
+  const { isMobile } = useContext(DeviceContext);
   const projectsSectionRef = useRef(null);
   const awardsSectionRef = useRef(null);
   const [hoveredPrintImage, setHoveredPrintImage] = useState(null);
@@ -51,12 +53,14 @@ export default function HomePage({ site, home, projects }) {
     : null;
 
   const handlePrintHoverStart = (printItem) => {
+    if (isMobile) return;
     const firstGalleryItem = printItem?.gallery?.[0];
     if (!firstGalleryItem?.medium) return;
     setHoveredPrintImage(firstGalleryItem.medium);
   };
 
   const handlePrintHoverEnd = () => {
+    if (isMobile) return;
     setHoveredPrintImage(null);
   };
 
@@ -92,6 +96,11 @@ export default function HomePage({ site, home, projects }) {
       setActivePrintIndex(wrappedIndex);
     }
   }, [activePrintIndex, galleryCount]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    setHoveredPrintImage(null);
+  }, [isMobile]);
 
   useEffect(() => {
     if (activePrintIndex === null) return;
@@ -225,8 +234,8 @@ export default function HomePage({ site, home, projects }) {
             {home.print?.map((printItem, index) => (
               <motion.li
                 key={printItem?.title || index}
-                onHoverStart={() => handlePrintHoverStart(printItem)}
-                onHoverEnd={handlePrintHoverEnd}
+                onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
+                onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
                 onClick={() => handlePrintClick(printItem)}
                 whileHover={{
                   textIndent: printItem.gallery ? "20px" : "0px",
@@ -279,7 +288,7 @@ export default function HomePage({ site, home, projects }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            onClick={closeGalleryOverlay}
+            onClick={isMobile ? undefined : closeGalleryOverlay}
           >
             <motion.div
               className={styles.galleryOverlayInner}
@@ -294,7 +303,7 @@ export default function HomePage({ site, home, projects }) {
               <div className={styles.galleryOverlayNavigation}>
                 <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
                   <span typo="bold">←</span>
-                  <span>{printItemsWithGallery[previousPrintIndex]?.title}</span>
+                  {!isMobile ? <span>{printItemsWithGallery[previousPrintIndex]?.title}</span> : null}
                 </button>
 
                 <button type="button" className={styles.galleryOverlayClose} onClick={closeGalleryOverlay} typo="bold">
@@ -302,7 +311,7 @@ export default function HomePage({ site, home, projects }) {
                 </button>
 
                 <button type="button" className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
-                  <span>{printItemsWithGallery[nextPrintIndex]?.title}</span>
+                  {!isMobile ? <span>{printItemsWithGallery[nextPrintIndex]?.title}</span> : null}
                   <span typo="bold">→</span>
                 </button>
               </div>

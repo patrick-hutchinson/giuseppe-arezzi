@@ -61,7 +61,7 @@
 .publicityColumn {
   display: flex;
   flex-direction: column;
-  gap: var(--margin-2);
+  gap: var(--margin-3);
 }
 
 .publicityGroupContent {
@@ -166,6 +166,11 @@ main section:last-of-type {
   margin-bottom: 0 !important;
 }
 
+.publicityPrint,
+.publicityWeb {
+  margin-top: var(--margin-2);
+}
+
 /* Tablets, iPads */
 @media screen and (min-width: 769px) {
   .publicitySection {
@@ -196,6 +201,11 @@ main section:last-of-type {
   .publicityWeb {
     grid-column: 3 / 4;
     grid-row: 1;
+  }
+
+  .publicityPrint,
+  .publicityWeb {
+    margin-top: 0;
   }
 }
 

@@ -13,7 +13,15 @@ const Carousel = ({ array, onIndexChange }) => {
   const [isDragging, setIsDragging] = useState(false);
   const { isTouch } = useContext(DeviceContext);
   if (!array) return;
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragResistance: 1, dragFree: isTouch ? true : false }, []);
+  const hasMultipleSlides = array.length > 1;
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: hasMultipleSlides,
+      dragResistance: 1,
+      dragFree: hasMultipleSlides && isTouch ? true : false,
+    },
+    []
+  );
   const rootRef = useRef(null);
   const wheelGestureLockedRef = useRef(false);
   const wheelGestureReleaseTimeoutRef = useRef(null);
@@ -58,10 +66,10 @@ const Carousel = ({ array, onIndexChange }) => {
     return closestNode === currentNode;
   }, []);
 
-  // Triple the date in case it is not long enough to fill the width of the screen
-  const carouselMedia = [...array, ...array, ...array];
+  const carouselMedia = hasMultipleSlides ? [...array, ...array, ...array] : array;
 
   useEffect(() => {
+    if (!hasMultipleSlides) return;
     if (!emblaApi) return;
 
     const updateIndex = () => {
@@ -77,9 +85,10 @@ const Carousel = ({ array, onIndexChange }) => {
       emblaApi.off("select", updateIndex);
       emblaApi.off("scroll", updateIndex);
     };
-  }, [emblaApi, array.length, onIndexChange]);
+  }, [emblaApi, array.length, hasMultipleSlides, onIndexChange]);
 
   useEffect(() => {
+    if (!hasMultipleSlides) return;
     if (!emblaApi) return;
 
     const handleKeyDown = (e) => {
@@ -101,9 +110,10 @@ const Carousel = ({ array, onIndexChange }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [emblaApi, isTopVisibleCarousel]);
+  }, [emblaApi, hasMultipleSlides, isTopVisibleCarousel]);
 
   useEffect(() => {
+    if (!hasMultipleSlides) return;
     if (!emblaApi) return;
 
     const onDragStart = () => setIsDragging(true);
@@ -118,7 +128,7 @@ const Carousel = ({ array, onIndexChange }) => {
       emblaApi.off("pointerUp", onDragEnd);
       emblaApi.off("dragEnd", onDragEnd);
     };
-  }, [emblaApi]);
+  }, [emblaApi, hasMultipleSlides]);
 
   useEffect(() => {
     return () => {
@@ -129,6 +139,7 @@ const Carousel = ({ array, onIndexChange }) => {
   }, []);
 
   const handleWheel = (event) => {
+    if (!hasMultipleSlides) return;
     if (!emblaApi) return;
     if (!isTopVisibleCarousel()) return;
 
@@ -164,7 +175,9 @@ const Carousel = ({ array, onIndexChange }) => {
 
   return (
     <motion.div
-      className={`${styles.carousel_outer} embla`}
+      className={`${styles.carousel_outer} ${hasMultipleSlides ? "embla" : ""} ${
+        !hasMultipleSlides ? styles.carouselStatic : ""
+      }`}
       ref={setEmblaNode}
       data-carousel-id={carouselIdRef.current}
       onWheel={handleWheel}

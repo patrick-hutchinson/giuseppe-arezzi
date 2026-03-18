@@ -24,6 +24,10 @@
   overflow-y: auto;
 }
 
+.projectInfoMobile {
+  width: 100%;
+}
+
 .projectInfoTitle {
   margin-bottom: var(--margin-2);
 }
