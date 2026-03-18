@@ -21,7 +21,7 @@ const ProjectHeader = ({
   const [isToggleHovered, setIsToggleHovered] = useState(false);
   const [headerSize, setHeaderSize] = useState({ width: 0, height: 0 });
   const headerRef = useRef(null);
-  const shouldHideTitle = hideTitle || isToggleHovered;
+  const shouldHideTitle = disableCursorFollow ? false : hideTitle || isToggleHovered;
 
   useEffect(() => {
     if (!headerRef.current || typeof ResizeObserver === "undefined") return;
@@ -50,6 +50,26 @@ const ProjectHeader = ({
 
     targetX = clamp(rawX, 0, maxX);
     targetY = clamp(rawY, 0, maxY);
+  }
+
+  if (disableCursorFollow) {
+    return (
+      <div className={styles.projectHeaderLayer} typo="bold">
+        <div className={styles.projectHeaderMobile}>
+          <div className={styles.projectHeaderMobileMeta}>
+            <span>{project.title},</span>
+            <span>{project.edition},</span>
+            <span>{project.year}</span>
+          </div>
+          <button
+            className={`${styles.toggleInfo} ${styles.toggleInfoMobile}`}
+            onClick={handleInfo}
+          >
+            {showInfo ? "-" : "+"}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -225,8 +225,16 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
   );
 
   return (
-    <>
-      <motion.div animate={{ opacity: fadeIntroductionOut ? 0 : 1 }} transition={{ duration: 0.2, ease: "easeOut" }}>
+    <div className={styles.introductionStable}>
+      <div className={styles.introductionStabilizer} aria-hidden="true" ref={introMeasurementRef}>
+        <Text text={introduction} className={styles.introductionText} />
+      </div>
+
+      <motion.div
+        className={styles.introductionOverlay}
+        animate={{ opacity: fadeIntroductionOut ? 0 : 1 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+      >
         {headerVisible ? (
           <div className={styles.introductionTextWithPrefix}>
             <span className={styles.introductionPrefixBold} typo="bold">
@@ -238,10 +246,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
           <Text text={introText} className={styles.introductionText} />
         )}
       </motion.div>
-      <div className={styles.introductionMeasure} aria-hidden="true" ref={introMeasurementRef}>
-        <Text text={introduction} className={styles.introductionText} />
-      </div>
-    </>
+    </div>
   );
 };
 

@@ -58,12 +58,41 @@
   will-change: transform;
 }
 
+.projectHeaderMobile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--margin-page);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.projectHeaderMobileMeta {
+  display: flex;
+  flex-direction: column;
+}
+
 button.toggleInfo {
   position: absolute;
   top: 0;
   left: 0;
-  padding: var(--margin-page);
-  z-index: 10;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+  margin: calc(var(--margin-page) - 24px);
+  z-index: 30;
   cursor: pointer;
   pointer-events: all;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+button.toggleInfoMobile {
+  position: static;
+  margin: 0;
 }

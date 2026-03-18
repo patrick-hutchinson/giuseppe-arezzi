@@ -45,12 +45,19 @@
   white-space: pre-wrap;
 }
 
-.introductionMeasure {
-  position: absolute;
-  inset: 0 0 auto 0;
+.introductionStable {
+  position: relative;
+}
+
+.introductionStabilizer {
   visibility: hidden;
   pointer-events: none;
-  z-index: -1;
+}
+
+.introductionOverlay {
+  position: absolute;
+  inset: 0 0 auto 0;
+  pointer-events: none;
 }
 
 .publicitySection {
@@ -136,7 +143,8 @@
 }
 
 .galleryOverlayNavLeft {
-  min-width: 200px;
+  min-width: 0;
+  flex: 1 1 0;
   text-align: left;
   display: inline-flex;
   align-items: center;
@@ -144,7 +152,8 @@
 }
 
 .galleryOverlayNavRight {
-  min-width: 240px;
+  min-width: 0;
+  flex: 1 1 0;
   text-align: right;
   display: inline-flex;
   align-items: center;
@@ -173,6 +182,16 @@ main section:last-of-type {
 
 /* Tablets, iPads */
 @media screen and (min-width: 769px) {
+  .galleryOverlayNavLeft {
+    min-width: 200px;
+    flex: 0 1 auto;
+  }
+
+  .galleryOverlayNavRight {
+    min-width: 240px;
+    flex: 0 1 auto;
+  }
+
   .publicitySection {
     display: grid;
     grid-template-columns:
