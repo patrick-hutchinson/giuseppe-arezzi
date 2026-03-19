@@ -50,6 +50,15 @@
   pointer-events: none;
 }
 
+.projectHeaderLayerMobileSticky {
+  position: sticky;
+  inset: auto;
+  top: calc(var(--margin-page) + 1.2em + 20px);
+  z-index: 6;
+  height: 0;
+  overflow: visible;
+}
+
 .projectHeader {
   position: absolute;
   top: 0;
@@ -68,6 +77,13 @@
   align-items: flex-start;
   justify-content: space-between;
   pointer-events: none;
+}
+
+.projectHeaderMobileSticky {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .projectHeaderMobileMeta {
@@ -95,4 +111,10 @@ button.toggleInfo {
 button.toggleInfoMobile {
   position: static;
   margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .project {
+    overflow: visible;
+  }
 }

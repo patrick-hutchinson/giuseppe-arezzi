@@ -8,8 +8,8 @@ const ProjectContainer = ({ projects }) => {
 
   return (
     <div className={styles.projectContainer}>
-      {projects.map((project) => (
-        <Project key={project._id} project={project} />
+      {projects.map((project, index) => (
+        <Project key={project._id} project={project} projectIndex={index} />
       ))}
     </div>
   );

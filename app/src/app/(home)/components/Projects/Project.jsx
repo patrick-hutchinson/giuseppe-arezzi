@@ -9,7 +9,7 @@ import ProjectHeader from "./ProjectHeader";
 import ProjectDescription from "./ProjectDescription";
 import { DeviceContext } from "@/context/DeviceContext";
 
-const Project = ({ project }) => {
+const Project = ({ project, projectIndex = 0 }) => {
   const { isTouch, isMobile, isTablet } = useContext(DeviceContext);
   const [showInfo, setShowInfo] = useState(false);
   const [isInfoPanelHovered, setIsInfoPanelHovered] = useState(false);
@@ -67,6 +67,7 @@ const Project = ({ project }) => {
   return (
     <div
       className={styles.project}
+      style={{ zIndex: projectIndex + 1 }}
       onMouseMove={isTouch ? undefined : handleMouseMove}
       onMouseEnter={isTouch ? undefined : handleMouseEnter}
       onMouseLeave={isTouch ? undefined : handleMouseLeave}
@@ -80,6 +81,7 @@ const Project = ({ project }) => {
         hideTitle={isInfoPanelHovered}
         containerSize={containerSize}
         disableCursorFollow={Boolean(isTouch)}
+        isMobile={Boolean(isMobile)}
       />
 
       <div className={styles.projectStage}>
