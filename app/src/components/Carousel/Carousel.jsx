@@ -18,23 +18,21 @@ const Carousel = ({ array, onIndexChange }) => {
     {
       loop: hasMultipleSlides,
       dragResistance: 1,
-      dragFree: hasMultipleSlides && isTouch ? true : false,
+      dragFree: hasMultipleSlides ? true : false,
     },
-    []
+    [],
   );
   const rootRef = useRef(null);
   const wheelGestureLockedRef = useRef(false);
   const wheelGestureReleaseTimeoutRef = useRef(null);
-  const carouselIdRef = useRef(
-    `carousel-${Date.now()}-${Math.random().toString(16).slice(2)}`
-  );
+  const carouselIdRef = useRef(`carousel-${Date.now()}-${Math.random().toString(16).slice(2)}`);
 
   const setEmblaNode = useCallback(
     (node) => {
       rootRef.current = node;
       emblaRef(node);
     },
-    [emblaRef]
+    [emblaRef],
   );
 
   const isTopVisibleCarousel = useCallback(() => {

@@ -25,6 +25,7 @@ export default function HomePage({ site, home, projects }) {
   const { isMobile, isTouch } = useContext(DeviceContext);
   const projectsSectionRef = useRef(null);
   const awardsSectionRef = useRef(null);
+  const lockedScrollYRef = useRef(0);
   const [hoveredPrintImage, setHoveredPrintImage] = useState(null);
   const [activePrintIndex, setActivePrintIndex] = useState(null);
   const [showFloatingHeader, setShowFloatingHeader] = useState(false);
@@ -43,6 +44,23 @@ export default function HomePage({ site, home, projects }) {
   const hasActivePrint = normalizedActivePrintIndex !== null;
   const activePrint = hasActivePrint ? printItemsWithGallery[normalizedActivePrintIndex] : null;
   const activeGallery = activePrint?.gallery || null;
+  const singleMobileImage = Array.isArray(activeGallery) && activeGallery.length === 1 ? activeGallery[0] : null;
+  const isSingleMobilePortraitImage =
+    Boolean(isMobile) &&
+    singleMobileImage?.medium?.type === "image" &&
+    typeof singleMobileImage?.medium?.width === "number" &&
+    typeof singleMobileImage?.medium?.height === "number" &&
+    singleMobileImage.medium.height > singleMobileImage.medium.width;
+  const isSingleMobileLandscapeImage =
+    Boolean(isMobile) &&
+    singleMobileImage?.medium?.type === "image" &&
+    typeof singleMobileImage?.medium?.width === "number" &&
+    typeof singleMobileImage?.medium?.height === "number" &&
+    singleMobileImage.medium.width >= singleMobileImage.medium.height;
+  const singleMobileLandscapeAspect =
+    isSingleMobileLandscapeImage && singleMobileImage?.medium?.height
+      ? singleMobileImage.medium.width / singleMobileImage.medium.height
+      : null;
   const previousPrintIndex = hasActivePrint ? getWrappedIndex(normalizedActivePrintIndex - 1, galleryCount) : null;
   const nextPrintIndex = hasActivePrint ? getWrappedIndex(normalizedActivePrintIndex + 1, galleryCount) : null;
 
@@ -110,6 +128,31 @@ export default function HomePage({ site, home, projects }) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [activePrintIndex]);
+
+  useEffect(() => {
+    if (!hasActivePrint) return;
+
+    const html = document.documentElement;
+    const body = document.body;
+    const lenis = window?.lenis || window?.__lenis;
+
+    lockedScrollYRef.current = window.scrollY || window.pageYOffset || 0;
+
+    lenis?.stop?.();
+
+    html.classList.add("gallery-scroll-lock");
+    body.classList.add("gallery-scroll-lock");
+    body.style.top = `-${lockedScrollYRef.current}px`;
+
+    return () => {
+      lenis?.start?.();
+
+      html.classList.remove("gallery-scroll-lock");
+      body.classList.remove("gallery-scroll-lock");
+      body.style.top = "";
+      window.scrollTo(0, lockedScrollYRef.current);
+    };
+  }, [hasActivePrint]);
 
   useEffect(() => {
     let frameId = null;
@@ -237,7 +280,7 @@ export default function HomePage({ site, home, projects }) {
                 onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
                 onClick={() => handlePrintClick(printItem)}
                 whileHover={{
-                  textIndent: printItem.gallery ? "20px" : "0px",
+                  textIndent: isTouch ? "0px" : printItem.gallery ? "20px" : "0px",
                   fontWeight: printItem.gallery ? 700 : 400,
                   cursor: printItem.gallery ? "pointer" : "default",
                 }}
@@ -297,7 +340,26 @@ export default function HomePage({ site, home, projects }) {
               transition={{ duration: 0.25, ease: "easeOut" }}
               onClick={(event) => event.stopPropagation()}
             >
-              <Carousel array={activeGallery} />
+              {isSingleMobilePortraitImage ? (
+                <div className={styles.singleMobileGalleryImage}>
+                  <Media medium={singleMobileImage?.medium} eager />
+                </div>
+              ) : isSingleMobileLandscapeImage ? (
+                <div className={styles.singleMobileLandscapePan}>
+                  <div
+                    className={styles.singleMobileLandscapeFrame}
+                    style={
+                      singleMobileLandscapeAspect
+                        ? { width: `calc(90dvh * ${singleMobileLandscapeAspect})` }
+                        : undefined
+                    }
+                  >
+                    <Media medium={singleMobileImage?.medium} eager contain />
+                  </div>
+                </div>
+              ) : (
+                <Carousel array={activeGallery} />
+              )}
 
               <div className={styles.galleryOverlayNavigation}>
                 <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>

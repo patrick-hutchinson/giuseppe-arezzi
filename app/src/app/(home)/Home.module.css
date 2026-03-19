@@ -109,15 +109,58 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--margin-page);
+  padding: var(--margin-page) 0;
+}
+
+:global(html.gallery-scroll-lock),
+:global(body.gallery-scroll-lock) {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+:global(body.gallery-scroll-lock) {
+  position: fixed;
+  width: 100%;
 }
 
 .galleryOverlayInner {
-  width: 100%;
-  max-width: 1400px;
+  width: 100vw;
+  max-width: none;
   display: flex;
   flex-direction: column;
   gap: var(--margin-page);
+}
+
+.singleMobileGalleryImage {
+  height: 90vh;
+}
+
+.singleMobileGalleryImage :global(img) {
+  object-fit: cover !important;
+}
+
+.singleMobileLandscapePan {
+  width: 100%;
+  height: 90vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.singleMobileLandscapeFrame {
+  height: 100%;
+  min-width: 100%;
+  flex: 0 0 auto;
+}
+
+.singleMobileLandscapeFrame :global(img) {
+  object-fit: contain !important;
 }
 
 .galleryOverlayClose {
@@ -169,6 +212,25 @@
 
 .galleryOverlayInner :global(.embla__slide) {
   height: 90vh !important;
+}
+
+@media screen and (max-width: 768px) {
+  .galleryOverlayInner :global(.carouselStatic .embla__slide) {
+    height: calc(100dvh - (3 * var(--margin-page))) !important;
+  }
+
+  .galleryOverlayInner :global(.carouselStatic .embla__slide > div) {
+    height: 100%;
+  }
+
+  .galleryOverlayInner :global(.carouselStatic .embla__slide > div > div) {
+    height: 100% !important;
+    aspect-ratio: auto !important;
+  }
+
+  .galleryOverlayInner :global(.carouselStatic .embla__slide img) {
+    object-fit: cover !important;
+  }
 }
 
 main section:last-of-type {
