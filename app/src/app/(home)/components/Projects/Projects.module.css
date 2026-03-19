@@ -116,8 +116,10 @@ button.toggleInfoMobile {
   height: 48px;
   min-height: 48px;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 5px;
+  line-height: 1;
   transform: translateX(24px);
 }
 

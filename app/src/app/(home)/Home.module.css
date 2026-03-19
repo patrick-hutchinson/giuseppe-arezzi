@@ -222,7 +222,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: -14px;
+  z-index: 1;
+}
+
+.galleryOverlayClose::before {
+  content: "";
+  position: absolute;
+  inset: -14px;
 }
 
 .galleryOverlayInner :global(.embla__slide) {
