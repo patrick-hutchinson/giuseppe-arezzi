@@ -197,6 +197,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--margin-3);
+  padding: 14px;
+  margin: -14px;
 }
 
 .galleryOverlayNavRight {
@@ -207,12 +209,20 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--margin-3);
+  padding: 14px;
+  margin: -14px;
 }
 
 .galleryOverlayClose {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: -14px;
 }
 
 .galleryOverlayInner :global(.embla__slide) {

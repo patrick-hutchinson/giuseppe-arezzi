@@ -195,15 +195,24 @@ export default function HomePage({ site, home, projects }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
           >
-            <a
-              href={`mailto:${site?.email || ""}`}
-              className={styles.floatingHeaderContact}
-              onMouseEnter={() => setIsHoveringContact(true)}
-              onMouseLeave={() => setIsHoveringContact(false)}
-              typo="bold"
-            >
-              {isHoveringContact ? site?.email : "Contact"}
-            </a>
+            <AnimatePresence>
+              {!hasActivePrint ? (
+                <motion.a
+                  key="floating-contact"
+                  href={`mailto:${site?.email || ""}`}
+                  className={styles.floatingHeaderContact}
+                  onMouseEnter={() => setIsHoveringContact(true)}
+                  onMouseLeave={() => setIsHoveringContact(false)}
+                  typo="bold"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                >
+                  {isHoveringContact ? site?.email : "Contact"}
+                </motion.a>
+              ) : null}
+            </AnimatePresence>
           </motion.header>
         ) : null}
       </AnimatePresence>
