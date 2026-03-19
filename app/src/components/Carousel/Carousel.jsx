@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import useEmblaCarousel from "embla-carousel-react";
 import Media from "@/components/Media/Media";
@@ -7,13 +7,11 @@ import styles from "./Carousel.module.css";
 
 import { motion } from "framer-motion";
 
-import { DeviceContext } from "@/context/DeviceContext";
-
 const Carousel = ({ array, onIndexChange }) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const { isTouch } = useContext(DeviceContext);
   if (!array) return;
   const hasMultipleSlides = array.length > 1;
+  const requiresLoopDuplication = array.length === 2;
+  const carouselMedia = requiresLoopDuplication ? [...array, ...array] : array;
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: hasMultipleSlides,
@@ -71,7 +69,8 @@ const Carousel = ({ array, onIndexChange }) => {
 
     const updateIndex = () => {
       const index = emblaApi.selectedScrollSnap();
-      onIndexChange?.(index);
+      const normalizedIndex = index % array.length;
+      onIndexChange?.(normalizedIndex);
     };
 
     updateIndex();
@@ -108,24 +107,6 @@ const Carousel = ({ array, onIndexChange }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [emblaApi, hasMultipleSlides, isTopVisibleCarousel]);
-
-  useEffect(() => {
-    if (!hasMultipleSlides) return;
-    if (!emblaApi) return;
-
-    const onDragStart = () => setIsDragging(true);
-    const onDragEnd = () => setIsDragging(false);
-
-    emblaApi.on("pointerDown", onDragStart);
-    emblaApi.on("pointerUp", onDragEnd);
-    emblaApi.on("dragEnd", onDragEnd);
-
-    return () => {
-      emblaApi.off("pointerDown", onDragStart);
-      emblaApi.off("pointerUp", onDragEnd);
-      emblaApi.off("dragEnd", onDragEnd);
-    };
-  }, [emblaApi, hasMultipleSlides]);
 
   useEffect(() => {
     return () => {
@@ -180,9 +161,9 @@ const Carousel = ({ array, onIndexChange }) => {
       onWheel={handleWheel}
     >
       <div className={`${styles.carousel_inner} embla__container`}>
-        {array.map((item, index) => {
+        {carouselMedia.map((item, index) => {
           return (
-            <li key={item?._id ?? `slide-${index}`} className={`${styles.slide} embla__slide`}>
+            <li key={`${item?._id ?? "slide"}-${index}`} className={`${styles.slide} embla__slide`}>
               <Media medium={item.medium} />
             </li>
           );

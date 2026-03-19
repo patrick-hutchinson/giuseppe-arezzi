@@ -265,60 +265,62 @@ export default function HomePage({ site, home, projects }) {
           </AnimatePresence>
         </div>
 
-        <div className={`${styles.publicityPrint} ${styles.publicityColumn}`}>
-          <div typo="bold">Selected Print</div>
-          <ul>
-            {home.print?.map((printItem, index) => (
-              <motion.li
-                key={printItem?.title || index}
-                typo={
-                  isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0
-                    ? "bold"
-                    : undefined
-                }
-                onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
-                onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
-                onClick={() => handlePrintClick(printItem)}
-                whileHover={{
-                  textIndent: isTouch ? "0px" : printItem.gallery ? "20px" : "0px",
-                  fontWeight: printItem.gallery ? 700 : 400,
-                  cursor: printItem.gallery ? "pointer" : "default",
-                }}
-              >
-                {printItem.title}
-              </motion.li>
-            ))}
-          </ul>
-        </div>
+        <div className={`${styles.publicityMetaColumn} ${styles.publicityColumn}`}>
+          <div className={styles.publicityPrint}>
+            <div typo="bold">Selected Print</div>
+            <ul>
+              {home.print?.map((printItem, index) => (
+                <motion.li
+                  key={printItem?.title || index}
+                  typo={
+                    isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0
+                      ? "bold"
+                      : undefined
+                  }
+                  onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
+                  onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
+                  onClick={() => handlePrintClick(printItem)}
+                  whileHover={{
+                    textIndent: isTouch ? "0px" : printItem.gallery ? "20px" : "0px",
+                    fontWeight: printItem.gallery ? 700 : 400,
+                    cursor: printItem.gallery ? "pointer" : "default",
+                  }}
+                >
+                  {printItem.title}
+                </motion.li>
+              ))}
+            </ul>
+          </div>
 
-        <div className={`${styles.publicityWeb} ${styles.publicityColumn}`}>
-          <div typo="bold">Selected Web</div>
+          <div className={styles.publicityWeb}>
+            <div typo="bold">Selected Web</div>
 
-          <PortableText
-            value={home.web}
-            components={{
-              block: {
-                normal: ({ children }) => <div>{children}</div>,
-              },
-              marks: {
-                link: ({ value, children }) => {
-                  const href = value?.href || value?.link;
-
-                  return (
-                    <motion.a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ x: 20, fontWeight: 700 }}
-                      style={{ display: "inline-block", cursor: "pointer" }}
-                    >
-                      {children}
-                    </motion.a>
-                  );
+            <PortableText
+              value={home.web}
+              components={{
+                block: {
+                  normal: ({ children }) => <div>{children}</div>,
                 },
-              },
-            }}
-          />
+                marks: {
+                  link: ({ value, children }) => {
+                    const href = value?.href || value?.link;
+
+                    return (
+                      <motion.a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ x: 20, fontWeight: 700 }}
+                        style={{ display: "inline-block", cursor: "pointer" }}
+                      >
+                        {children}
+                      </motion.a>
+                    );
+                  },
+                },
+              }}
+            />
+          </div>
         </div>
       </Section>
 
