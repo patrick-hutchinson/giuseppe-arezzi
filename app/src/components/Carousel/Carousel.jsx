@@ -18,7 +18,8 @@ const Carousel = ({ array, onIndexChange }) => {
     {
       loop: hasMultipleSlides,
       dragResistance: 1,
-      dragFree: hasMultipleSlides ? true : false,
+      dragFree: hasMultipleSlides,
+      skipSnaps: hasMultipleSlides,
     },
     [],
   );
@@ -64,15 +65,13 @@ const Carousel = ({ array, onIndexChange }) => {
     return closestNode === currentNode;
   }, []);
 
-  const carouselMedia = hasMultipleSlides ? [...array, ...array, ...array] : array;
-
   useEffect(() => {
     if (!hasMultipleSlides) return;
     if (!emblaApi) return;
 
     const updateIndex = () => {
       const index = emblaApi.selectedScrollSnap();
-      onIndexChange?.(index % array.length); // normalize for tripled array
+      onIndexChange?.(index);
     };
 
     updateIndex();
@@ -181,9 +180,9 @@ const Carousel = ({ array, onIndexChange }) => {
       onWheel={handleWheel}
     >
       <div className={`${styles.carousel_inner} embla__container`}>
-        {carouselMedia.map((item) => {
+        {array.map((item, index) => {
           return (
-            <li key={item._id} className={`${styles.slide} embla__slide`}>
+            <li key={item?._id ?? `slide-${index}`} className={`${styles.slide} embla__slide`}>
               <Media medium={item.medium} />
             </li>
           );
