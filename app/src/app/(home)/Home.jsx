@@ -22,7 +22,7 @@ const getWrappedIndex = (index, length) => {
 };
 
 export default function HomePage({ site, home, projects }) {
-  const { isMobile } = useContext(DeviceContext);
+  const { isMobile, isTouch } = useContext(DeviceContext);
   const projectsSectionRef = useRef(null);
   const awardsSectionRef = useRef(null);
   const [hoveredPrintImage, setHoveredPrintImage] = useState(null);
@@ -38,19 +38,13 @@ export default function HomePage({ site, home, projects }) {
 
   const galleryCount = printItemsWithGallery.length;
   const normalizedActivePrintIndex =
-    activePrintIndex === null || galleryCount === 0
-      ? null
-      : getWrappedIndex(activePrintIndex, galleryCount);
+    activePrintIndex === null || galleryCount === 0 ? null : getWrappedIndex(activePrintIndex, galleryCount);
 
   const hasActivePrint = normalizedActivePrintIndex !== null;
   const activePrint = hasActivePrint ? printItemsWithGallery[normalizedActivePrintIndex] : null;
   const activeGallery = activePrint?.gallery || null;
-  const previousPrintIndex = hasActivePrint
-    ? getWrappedIndex(normalizedActivePrintIndex - 1, galleryCount)
-    : null;
-  const nextPrintIndex = hasActivePrint
-    ? getWrappedIndex(normalizedActivePrintIndex + 1, galleryCount)
-    : null;
+  const previousPrintIndex = hasActivePrint ? getWrappedIndex(normalizedActivePrintIndex - 1, galleryCount) : null;
+  const nextPrintIndex = hasActivePrint ? getWrappedIndex(normalizedActivePrintIndex + 1, galleryCount) : null;
 
   const handlePrintHoverStart = (printItem) => {
     if (isMobile) return;
@@ -234,6 +228,11 @@ export default function HomePage({ site, home, projects }) {
             {home.print?.map((printItem, index) => (
               <motion.li
                 key={printItem?.title || index}
+                typo={
+                  isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0
+                    ? "bold"
+                    : undefined
+                }
                 onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
                 onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
                 onClick={() => handlePrintClick(printItem)}
@@ -292,9 +291,9 @@ export default function HomePage({ site, home, projects }) {
           >
             <motion.div
               className={styles.galleryOverlayInner}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
               onClick={(event) => event.stopPropagation()}
             >
