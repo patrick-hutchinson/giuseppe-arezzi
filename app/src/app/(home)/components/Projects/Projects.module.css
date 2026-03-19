@@ -118,13 +118,27 @@ button.toggleInfoMobile {
   display: inline-flex;
   align-items: flex-start;
   justify-content: flex-end;
+  padding-top: 0;
   padding-right: 5px;
   line-height: 1;
-  transform: translateX(24px);
+  transform: none;
 }
 
 @media screen and (max-width: 768px) {
   .project {
     overflow: visible;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  button.toggleInfo {
+    top: var(--margin-page);
+    left: var(--margin-page);
+    margin: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    transform: none;
+    line-height: 1;
   }
 }
