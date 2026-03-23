@@ -22,8 +22,6 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
     [],
   );
   const rootRef = useRef(null);
-  const wheelGestureLockedRef = useRef(false);
-  const wheelGestureReleaseTimeoutRef = useRef(null);
   const carouselIdRef = useRef(`carousel-${Date.now()}-${Math.random().toString(16).slice(2)}`);
 
   const setEmblaNode = useCallback(
@@ -106,14 +104,6 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
     };
   }, [emblaApi, isTopVisibleCarousel]);
 
-  useEffect(() => {
-    return () => {
-      if (wheelGestureReleaseTimeoutRef.current) {
-        window.clearTimeout(wheelGestureReleaseTimeoutRef.current);
-      }
-    };
-  }, []);
-
   const handleWheel = (event) => {
     if (!hasMultipleSlides) return;
     if (!emblaApi) return;
@@ -126,22 +116,24 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
 
     if (!isHorizontalIntent && !isShiftHorizontalIntent) return;
 
+    const wheelDelta = isHorizontalIntent ? event.deltaX : event.deltaY;
+    const directionAdjustedDelta = -wheelDelta;
+    const engine = emblaApi.internalEngine?.();
+    const canScrollByDistance =
+      Boolean(engine?.scrollTo?.distance) &&
+      Boolean(engine?.scrollBody?.useBaseFriction) &&
+      Boolean(engine?.scrollBody?.useDuration);
+
     event.preventDefault();
 
-    if (wheelGestureReleaseTimeoutRef.current) {
-      window.clearTimeout(wheelGestureReleaseTimeoutRef.current);
+    if (canScrollByDistance) {
+      // Trackpad swipe follows wheel distance continuously instead of snap-by-snap stepping.
+      // engine.scrollBody.useBaseFriction().useDuration(25);
+      engine.scrollTo.distance(directionAdjustedDelta * 1, false);
+      return;
     }
 
-    wheelGestureReleaseTimeoutRef.current = window.setTimeout(() => {
-      wheelGestureLockedRef.current = false;
-      wheelGestureReleaseTimeoutRef.current = null;
-    }, 180);
-
-    if (wheelGestureLockedRef.current) return;
-    wheelGestureLockedRef.current = true;
-
-    const wheelDelta = isHorizontalIntent ? event.deltaX : event.deltaY;
-    if (wheelDelta > 0) {
+    if (directionAdjustedDelta > 0) {
       emblaApi.scrollNext();
       return;
     }

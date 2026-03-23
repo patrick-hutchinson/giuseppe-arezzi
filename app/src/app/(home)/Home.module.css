@@ -1,5 +1,15 @@
 .main {
   position: relative;
+  transition: opacity 0.24s ease-out;
+}
+
+.mainPending {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mainReady {
+  opacity: 1;
 }
 
 .floatingHeader {
@@ -39,11 +49,14 @@
 .introductionTextWithPrefix {
   display: flex;
   align-items: flex-start;
+  pointer-events: none;
 }
 
 .introductionPrefixBold {
   flex-shrink: 0;
   margin-right: 0.25ch;
+  pointer-events: all;
+  cursor: pointer;
 }
 
 .introductionTextInline {

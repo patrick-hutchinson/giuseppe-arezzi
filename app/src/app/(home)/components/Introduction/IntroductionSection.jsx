@@ -3,7 +3,7 @@ import Section from "@/components/Section/Section";
 import styles from "../../Home.module.css";
 import IntroductionText from "./IntroductionText";
 
-const IntroductionSection = ({ text, projectsBoundaryRef, headerVisible, awardsBoundaryRef }) => {
+const IntroductionSection = ({ text, projectsBoundaryRef, headerVisible, awardsBoundaryRef, onReady }) => {
   return (
     <Section className={styles.introductionSection}>
       <IntroductionText
@@ -11,6 +11,7 @@ const IntroductionSection = ({ text, projectsBoundaryRef, headerVisible, awardsB
         projectsBoundaryRef={projectsBoundaryRef}
         headerVisible={headerVisible}
         awardsBoundaryRef={awardsBoundaryRef}
+        onReady={onReady}
       />
     </Section>
   );

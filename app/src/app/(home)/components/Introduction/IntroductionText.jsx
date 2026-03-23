@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 import Text from "@/components/Text/Text";
@@ -124,7 +124,7 @@ const truncatePortableText = (blocks = [], maxCharacters = 0) => {
   return nextBlocks;
 };
 
-const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, awardsBoundaryRef }) => {
+const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, awardsBoundaryRef, onReady }) => {
   const introduction = text || [];
   const totalIntroCharacters = useMemo(() => countPortableTextCharacters(introduction), [introduction]);
   const fixedPrefixCharacters = useMemo(() => getFixedPrefixCharacters(introduction, INTRO_FIXED_WORDS), [introduction]);
@@ -135,6 +135,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
   );
   const introMeasurementRef = useRef(null);
   const initialProjectsTopRef = useRef(null);
+  const hasReportedReadyRef = useRef(false);
   const [visibleCharacters, setVisibleCharacters] = useState(totalIntroCharacters);
   const [fadeIntroductionOut, setFadeIntroductionOut] = useState(false);
 
@@ -171,6 +172,11 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
         if (currentVisibleCharacters === nextVisibleCharacters) return currentVisibleCharacters;
         return nextVisibleCharacters;
       });
+
+      if (!hasReportedReadyRef.current) {
+        hasReportedReadyRef.current = true;
+        onReady?.();
+      }
     };
 
     const requestUpdate = () => {
@@ -195,7 +201,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
       if (frameId !== null) window.cancelAnimationFrame(frameId);
       if (resizeObserver) resizeObserver.disconnect();
     };
-  }, [dynamicIntroCharacters, fixedPrefixCharacters, projectsBoundaryRef, totalIntroCharacters]);
+  }, [dynamicIntroCharacters, fixedPrefixCharacters, onReady, projectsBoundaryRef, totalIntroCharacters]);
 
   useEffect(() => {
     let frameId = null;
@@ -231,6 +237,21 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
     () => stripPortableTextPrefix(introText, fixedPrefixCharacters),
     [fixedPrefixCharacters, introText],
   );
+  const handleLogotypeClick = useCallback(() => {
+    const currentScrollY = window.scrollY || window.pageYOffset || 0;
+    if (currentScrollY <= 1) return;
+
+    const lenis = window?.lenis || window?.__lenis;
+    if (lenis?.scrollTo) {
+      lenis.scrollTo(0, {
+        duration: 1,
+        easing: (value) => 1 - (1 - value) ** 3,
+      });
+      return;
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className={styles.introductionStable}>
@@ -241,11 +262,11 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
       <motion.div
         className={styles.introductionOverlay}
         animate={{ opacity: fadeIntroductionOut ? 0 : 1 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        transition={{ duration: 0 }}
       >
         {headerVisible ? (
           <div className={styles.introductionTextWithPrefix}>
-            <span className={styles.introductionPrefixBold} typo="bold">
+            <span className={styles.introductionPrefixBold} typo="bold" onClick={handleLogotypeClick}>
               {fixedPrefixText}
             </span>
             <Text text={introTextWithoutPrefix} className={styles.introductionTextInline} />

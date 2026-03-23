@@ -216,7 +216,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                   <div typo="bold">Past Collaborators</div>
                   <Text text={home.collaborators} />
                 </div>
-                <div>
+                <div style={{ gap: "0px" }}>
                   For any enquiries, press, or internship requests, feel free to get in touch at{" "}
                   <strong>{site?.email}</strong>
                 </div>

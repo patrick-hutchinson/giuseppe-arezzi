@@ -12,6 +12,7 @@ export default function HomePage({ site, home, projects }) {
   const awardsSectionRef = useRef(null);
   const [isPrintGalleryOpen, setIsPrintGalleryOpen] = useState(false);
   const [showFloatingHeader, setShowFloatingHeader] = useState(false);
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   const [isHoveringContact, setIsHoveringContact] = useState(false);
 
@@ -46,7 +47,7 @@ export default function HomePage({ site, home, projects }) {
   }, []);
 
   return (
-    <main className={styles.main}>
+    <main className={`${styles.main} ${isLayoutReady ? styles.mainReady : styles.mainPending}`}>
       {showFloatingHeader ? (
         <header className={styles.floatingHeader}>
           {isPrintGalleryOpen ? (
@@ -71,6 +72,7 @@ export default function HomePage({ site, home, projects }) {
         projectsBoundaryRef={projectsSectionRef}
         headerVisible={showFloatingHeader}
         awardsBoundaryRef={awardsSectionRef}
+        onReady={() => setIsLayoutReady(true)}
       />
 
       <ProjectsSection projects={projects} sectionRef={projectsSectionRef} />

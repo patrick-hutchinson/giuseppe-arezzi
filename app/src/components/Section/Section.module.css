@@ -1,4 +1,4 @@
 .section {
-  margin-bottom: var(--margin-1);
+  margin-bottom: var(--margin-page);
   height: fit-content;
 }
