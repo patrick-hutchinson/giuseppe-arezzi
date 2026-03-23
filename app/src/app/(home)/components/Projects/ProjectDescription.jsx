@@ -1,9 +1,18 @@
+import { useEffect, useState } from "react";
 import Text from "@/components/Text/Text";
 import { AnimatePresence, motion } from "framer-motion";
+import { createPortal } from "react-dom";
 
 import styles from "./Projects.module.css";
 
-const ProjectDescription = ({ project, showInfo, onHoverStart, onHoverEnd, isMobile = false }) => {
+const ProjectDescription = ({ project, showInfo, onClose, onHoverStart, onHoverEnd, isMobile = false }) => {
+  const [portalRoot, setPortalRoot] = useState(null);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    setPortalRoot(document.body);
+  }, [isMobile]);
+
   if (!showInfo) return null;
 
   if (!isMobile) {
@@ -29,11 +38,11 @@ const ProjectDescription = ({ project, showInfo, onHoverStart, onHoverEnd, isMob
     );
   }
 
-  return (
+  const mobilePanel = (
     <AnimatePresence>
       {showInfo ? (
         <motion.aside
-          className={`${styles.projectInfo} ${styles.projectInfoMobile}`}
+          className={`${styles.projectInfo} ${styles.projectInfoMobile} ${styles.projectInfoMobileOverlay}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -41,6 +50,16 @@ const ProjectDescription = ({ project, showInfo, onHoverStart, onHoverEnd, isMob
           onMouseEnter={onHoverStart}
           onMouseLeave={onHoverEnd}
         >
+          <div>
+            <strong>{project.title},</strong> <br />
+            <strong>{project.edition},</strong> <br />
+            <strong>{project.year}</strong>
+          </div>
+
+          <button type="button" className={styles.projectInfoMobileClose} onClick={onClose} aria-label="Close info panel">
+            <strong>-</strong>
+          </button>
+
           {project.description ? <Text text={project.description} className={styles.projectDescription} /> : null}
           <br />
           {project.credits && project.credits.length > 0 && (
@@ -61,6 +80,9 @@ const ProjectDescription = ({ project, showInfo, onHoverStart, onHoverEnd, isMob
       ) : null}
     </AnimatePresence>
   );
+
+  if (!portalRoot) return null;
+  return createPortal(mobilePanel, portalRoot);
 };
 
 export default ProjectDescription;

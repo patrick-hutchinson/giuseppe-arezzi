@@ -129,6 +129,7 @@ const Project = ({ project, projectIndex = 0 }) => {
         <ProjectDescription
           project={project}
           showInfo={showInfo}
+          onClose={handleInfo}
           onHoverStart={() => setIsInfoPanelHovered(true)}
           onHoverEnd={() => setIsInfoPanelHovered(false)}
           isMobile={Boolean(useMobileInfoMode)}
