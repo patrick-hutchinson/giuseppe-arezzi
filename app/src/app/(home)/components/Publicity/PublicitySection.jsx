@@ -272,13 +272,19 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
               transition={{ duration: 0.25, ease: "easeOut" }}
               onClick={(event) => event.stopPropagation()}
             >
-              {!isMobile && activePrint?.title ? (
+              {activePrint?.title ? (
                 <div
                   className={styles.galleryOverlayFixedTitle}
                   ref={galleryOverlayFixedTitle}
                   style={{ top: `${overlayInnerTop}px`, left: "var(--margin-page)" }}
                 >
                   <strong>{activePrint.title}</strong>
+                  {isMobile && (activePrint?.edition || activePrint?.year) ? (
+                    <>
+                      {activePrint?.edition ? <div>{activePrint.edition}</div> : null}
+                      {activePrint?.year ? <div>{activePrint.year}</div> : null}
+                    </>
+                  ) : null}
                 </div>
               ) : null}
 

@@ -3,7 +3,6 @@ import Project from "./Project";
 import styles from "./Projects.module.css";
 
 const ProjectContainer = ({ projects }) => {
-  console.log(projects, "projects");
   if (!projects || projects.length == 0) return;
 
   return (

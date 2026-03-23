@@ -45,18 +45,20 @@
   padding-top: calc(50px + var(--margin-page) + var(--line-height-body));
 }
 
-.projectInfoMobileClose {
-  position: absolute;
-  top: calc(50px + var(--margin-page) + var(--line-height-body));
+.projectInfoMobileHeader {
+  position: fixed;
+  top: calc(var(--margin-page) + 1.2em + 20px);
+  left: var(--margin-page);
   right: var(--margin-page);
-  width: 48px;
-  height: 48px;
-  display: inline-flex;
+  display: flex;
   align-items: flex-start;
-  justify-content: flex-end;
-  padding-top: 0;
-  padding-right: 0;
-  line-height: 1;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.projectInfoMobileClose {
+  position: static;
+  margin: 0;
   z-index: 1;
   font-size: 30px;
 }

@@ -283,6 +283,12 @@
   padding-left: 25%;
 }
 
+@media screen and (max-width: 768px) {
+  .publicityCarousel :global(.embla) {
+    padding-left: 50%;
+  }
+}
+
 main section:last-of-type {
   margin-bottom: 0 !important;
 }
