@@ -219,7 +219,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 {!isMobile ? (
                   <div style={{ gap: "0px" }}>
                     For any enquiries, press, or internship requests, feel free to get in touch at{" "}
-                    <strong>{site?.email}</strong>
+                    <span typo="bold">{site?.email}</span>
                   </div>
                 ) : null}
               </motion.div>
@@ -253,7 +253,8 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
             </ul>
             {isMobile ? (
               <div style={{ gap: "0px", marginTop: "var(--margin-2)" }}>
-                For any enquiries, press, or internship requests, feel free to get in touch at <strong>{site?.email}</strong>
+                For any enquiries, press, or internship requests, feel free to get in touch at{" "}
+                <span typo="bold">{site?.email}</span>
               </div>
             ) : null}
           </div>
@@ -285,7 +286,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                   ref={galleryOverlayFixedTitle}
                   style={{ top: `${overlayInnerTop}px`, left: "var(--margin-page)" }}
                 >
-                  <strong>{activePrint.title}</strong>
+                  <span typo="bold">{activePrint.title}</span>
                   {isMobile && (activePrint?.edition || activePrint?.year) ? (
                     <>
                       {activePrint?.edition ? <div>{activePrint.edition}</div> : null}

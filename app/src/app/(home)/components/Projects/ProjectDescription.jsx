@@ -57,7 +57,7 @@ const ProjectDescription = ({ project, showInfo, onClose, onHoverStart, onHoverE
           </div>
 
           <button type="button" className={styles.projectInfoMobileClose} onClick={onClose} aria-label="Close info panel">
-            <strong>-</strong>
+            <div typo="bold">-</div>
           </button>
 
           {project.description ? <Text text={project.description} className={styles.projectDescription} /> : null}
