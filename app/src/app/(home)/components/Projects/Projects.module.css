@@ -94,6 +94,11 @@
   overflow: visible;
 }
 
+.projectHeaderLayerMobileStickyLast {
+  top: auto;
+  bottom: var(--margin-page);
+}
+
 .projectHeader {
   position: absolute;
   top: 0;
@@ -119,6 +124,11 @@
   top: 0;
   left: 0;
   right: 0;
+}
+
+.projectHeaderMobileStickyLast {
+  top: auto;
+  bottom: 0;
 }
 
 .projectHeaderMobileMeta {

@@ -207,6 +207,7 @@
   justify-content: space-between;
   gap: var(--margin-2);
   pointer-events: none;
+  font-size: 30px;
 }
 
 .galleryOverlayNavLeft,
@@ -347,4 +348,7 @@ main section:last-of-type {
 
 /* Desktop */
 @media screen and (min-width: 1280px) {
+  .galleryOverlayNavigation {
+    font-size: var(--font-size-body);
+  }
 }

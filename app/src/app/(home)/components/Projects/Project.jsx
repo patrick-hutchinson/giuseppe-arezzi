@@ -7,7 +7,7 @@ import ProjectHeader from "./ProjectHeader";
 import ProjectDescription from "./ProjectDescription";
 import { DeviceContext } from "@/context/DeviceContext";
 
-const Project = ({ project, projectIndex = 0 }) => {
+const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
   const { isTouch, isMobile, isTablet } = useContext(DeviceContext);
   const [showInfo, setShowInfo] = useState(false);
   const [isInfoPanelHovered, setIsInfoPanelHovered] = useState(false);
@@ -123,6 +123,7 @@ const Project = ({ project, projectIndex = 0 }) => {
         containerSize={containerSize}
         disableCursorFollow={Boolean(isTouch)}
         isMobile={Boolean(isMobile)}
+        isLastProject={isLastProject}
       />
 
       <div className={styles.projectStage}>

@@ -216,10 +216,12 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                   <div typo="bold">Past Collaborators</div>
                   <Text text={home.collaborators} />
                 </div>
-                <div style={{ gap: "0px" }}>
-                  For any enquiries, press, or internship requests, feel free to get in touch at{" "}
-                  <strong>{site?.email}</strong>
-                </div>
+                {!isMobile ? (
+                  <div style={{ gap: "0px" }}>
+                    For any enquiries, press, or internship requests, feel free to get in touch at{" "}
+                    <strong>{site?.email}</strong>
+                  </div>
+                ) : null}
               </motion.div>
             )}
           </AnimatePresence>
@@ -249,6 +251,11 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 </motion.li>
               ))}
             </ul>
+            {isMobile ? (
+              <div style={{ gap: "0px", marginTop: "var(--margin-2)" }}>
+                For any enquiries, press, or internship requests, feel free to get in touch at <strong>{site?.email}</strong>
+              </div>
+            ) : null}
           </div>
         </div>
       </Section>
@@ -316,7 +323,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 </button>
 
                 <button type="button" className={styles.galleryOverlayClose} onClick={closeGalleryOverlay} typo="bold">
-                  x
+                  ×
                 </button>
 
                 <button type="button" className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>

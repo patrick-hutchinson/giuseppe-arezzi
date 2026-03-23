@@ -8,7 +8,12 @@ const ProjectContainer = ({ projects }) => {
   return (
     <div className={styles.projectContainer}>
       {projects.map((project, index) => (
-        <Project key={project._id} project={project} projectIndex={index} />
+        <Project
+          key={project._id}
+          project={project}
+          projectIndex={index}
+          isLastProject={index === projects.length - 1}
+        />
       ))}
     </div>
   );
