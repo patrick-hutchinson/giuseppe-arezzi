@@ -50,10 +50,10 @@ const ProjectDescription = ({ project, showInfo, onClose, onHoverStart, onHoverE
           onMouseEnter={onHoverStart}
           onMouseLeave={onHoverEnd}
         >
-          <div>
-            <strong>{project.title},</strong> <br />
-            <strong>{project.edition},</strong> <br />
-            <strong>{project.year}</strong>
+          <div typo="bold">
+            <span>{project.title},</span> <br />
+            <span>{project.edition},</span> <br />
+            <span>{project.year}</span>
           </div>
 
           <button type="button" className={styles.projectInfoMobileClose} onClick={onClose} aria-label="Close info panel">

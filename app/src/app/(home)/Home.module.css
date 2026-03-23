@@ -40,6 +40,7 @@
   top: var(--margin-page);
   z-index: 1100;
   pointer-events: none;
+  margin-bottom: var(--margin-page);
 }
 
 .introductionText {
@@ -81,6 +82,12 @@
 .publicitySection {
   display: block;
   position: relative;
+  width: 100vw;
+  left: calc(-1 * var(--margin-page));
+  padding: var(--margin-page);
+  z-index: 1000;
+  background: #fff;
+  padding-bottom: 0;
 }
 
 .publicityMetaColumn {
@@ -126,9 +133,8 @@
 .galleryOverlay {
   position: fixed;
   inset: 0;
-  z-index: 40;
-  background: color-mix(in srgb, var(--background) 88%, transparent);
-  backdrop-filter: blur(4px);
+  z-index: 1100;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -317,6 +323,11 @@ main section:last-of-type {
     grid-template-rows: auto;
     align-items: start;
     column-gap: var(--margin-page);
+
+    width: auto;
+    left: 0;
+    padding: 0;
+    z-index: unset;
   }
 
   .publicityColumn {
@@ -343,6 +354,10 @@ main section:last-of-type {
 
   .publicityWeb {
     margin-top: var(--margin-2);
+  }
+
+  .introductionSection {
+    margin-bottom: 0;
   }
 }
 

@@ -37,16 +37,18 @@
   inset: 0;
   width: 100vw;
   height: 100dvh;
-  z-index: 24;
+  z-index: 1099;
   padding: var(--margin-page);
   background: var(--background);
   overflow-y: auto;
   overscroll-behavior: contain;
+  padding-top: calc(var(--margin-page) + 1.2em + 20px + var(--margin-page));
 }
 
 .projectInfoMobileClose {
   position: absolute;
   top: var(--margin-page);
+
   right: var(--margin-page);
   width: 48px;
   height: 48px;
@@ -58,6 +60,8 @@
   line-height: 1;
   z-index: 1;
   font-size: 30px;
+  padding-top: calc(1.2em + 17px);
+  padding-right: 8px;
 }
 
 .projectInfoTitle {
@@ -168,7 +172,7 @@ button.toggleInfoMobile {
 
 @media screen and (min-width: 769px) {
   button.toggleInfo {
-    top: var(--margin-page);
+    top: 10px;
     left: var(--margin-page);
     margin: 0;
     align-items: flex-start;
