@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import styles from "./Projects.module.css";
 
-const CURSOR_OFFSET = 12;
-
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const ProjectHeader = ({
@@ -20,8 +18,10 @@ const ProjectHeader = ({
 }) => {
   const isHoverActive = isHovering && !disableCursorFollow;
   const [isToggleHovered, setIsToggleHovered] = useState(false);
+  const [hasSnappedToCursor, setHasSnappedToCursor] = useState(false);
   const [headerSize, setHeaderSize] = useState({ width: 0, height: 0 });
   const headerRef = useRef(null);
+  const snapTimerRef = useRef(null);
   const shouldHideTitle = disableCursorFollow ? false : hideTitle || isToggleHovered;
 
   useEffect(() => {
@@ -40,12 +40,39 @@ const ProjectHeader = ({
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!isHoverActive) {
+      setHasSnappedToCursor(false);
+      if (snapTimerRef.current) {
+        window.clearTimeout(snapTimerRef.current);
+        snapTimerRef.current = null;
+      }
+      return;
+    }
+
+    if (snapTimerRef.current) {
+      window.clearTimeout(snapTimerRef.current);
+    }
+
+    snapTimerRef.current = window.setTimeout(() => {
+      setHasSnappedToCursor(true);
+      snapTimerRef.current = null;
+    }, 180);
+
+    return () => {
+      if (snapTimerRef.current) {
+        window.clearTimeout(snapTimerRef.current);
+        snapTimerRef.current = null;
+      }
+    };
+  }, [isHoverActive]);
+
   let targetX = 0;
   let targetY = 0;
 
   if (isHoverActive) {
-    const rawX = cursorPosition.x + CURSOR_OFFSET;
-    const rawY = cursorPosition.y + CURSOR_OFFSET;
+    const rawX = cursorPosition.x - headerSize.width / 2;
+    const rawY = cursorPosition.y - headerSize.height / 2;
     const maxX = Math.max(0, (containerSize?.width || 0) - headerSize.width);
     const maxY = Math.max(0, (containerSize?.height || 0) - headerSize.height);
 
@@ -108,18 +135,22 @@ const ProjectHeader = ({
         animate={{ opacity: shouldHideTitle ? 0 : 1, x: targetX, y: targetY }}
         transition={{
           opacity: { duration: 0.18, ease: "easeOut" },
-          x: {
-            type: "spring",
-            stiffness: isHoverActive ? 540 : 260,
-            damping: isHoverActive ? 44 : 28,
-            mass: isHoverActive ? 0.35 : 0.7,
-          },
-          y: {
-            type: "spring",
-            stiffness: isHoverActive ? 540 : 260,
-            damping: isHoverActive ? 44 : 28,
-            mass: isHoverActive ? 0.35 : 0.7,
-          },
+          x: isHoverActive && hasSnappedToCursor
+            ? { duration: 0 }
+            : {
+                type: "spring",
+                stiffness: 540,
+                damping: 44,
+                mass: 0.35,
+              },
+          y: isHoverActive && hasSnappedToCursor
+            ? { duration: 0 }
+            : {
+                type: "spring",
+                stiffness: 540,
+                damping: 44,
+                mass: 0.35,
+              },
         }}
       >
         {project.title}, Edition {project.edition}, {project.year}

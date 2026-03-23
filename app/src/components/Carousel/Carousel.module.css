@@ -1,8 +1,7 @@
 .carousel_outer {
   max-width: 100vw;
-  margin: auto;
+  margin: 0;
   user-select: none;
-  cursor: grab;
   overflow: hidden;
 }
 
@@ -12,14 +11,7 @@
 
 .carousel_outer:active,
 .carousel_outer:active * {
-  cursor: grabbing !important;
-}
-
-.carouselStatic,
-.carouselStatic *,
-.carouselStatic:active,
-.carouselStatic:active * {
-  cursor: default !important;
+  cursor: grabbing;
 }
 
 .carousel_inner {
@@ -29,6 +21,7 @@
 .slide {
   height: 80vh;
   margin-right: 0;
+  margin-left: -0.5px;
 }
 
 @media screen and (min-width: 320px) {

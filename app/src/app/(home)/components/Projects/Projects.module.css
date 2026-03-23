@@ -6,6 +6,10 @@
   overflow: hidden;
 }
 
+.projectCarouselWrap * {
+  cursor: none !important;
+}
+
 .projectStage {
   position: relative;
   height: 100%;

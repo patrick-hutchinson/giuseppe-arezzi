@@ -14,12 +14,17 @@
   pointer-events: none;
 }
 
+.floatingHeaderLogotype {
+  position: absolute;
+  left: 0;
+}
+
 .floatingHeaderContact {
   pointer-events: all;
 }
 
 .introductionSection {
-  min-height: 20vh;
+  min-height: 0;
   margin-bottom: 0;
   position: sticky;
   top: var(--margin-page);
@@ -136,6 +141,13 @@
   gap: var(--margin-page);
 }
 
+.galleryOverlayFixedTitle {
+  position: fixed;
+  left: var(--margin-page);
+  z-index: 0;
+  pointer-events: none;
+}
+
 .singleMobileGalleryImage {
   height: 90vh;
 }
@@ -235,7 +247,7 @@
   height: 90vh !important;
 }
 
-@media screen and (max-width: 768px) {
+/* @media screen and (max-width: 768px) {
   .galleryOverlayInner :global(.carouselStatic .embla__slide) {
     height: calc(100dvh - (3 * var(--margin-page))) !important;
   }
@@ -252,6 +264,10 @@
   .galleryOverlayInner :global(.carouselStatic .embla__slide img) {
     object-fit: cover !important;
   }
+} */
+
+.publicityCarousel :global(.embla) {
+  padding-left: 25%;
 }
 
 main section:last-of-type {

@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 
 import Text from "@/components/Text/Text";
 
-import styles from "../Home.module.css";
+import styles from "../../Home.module.css";
 
-const INTRO_PROJECT_GAP = 100;
+const INTRO_PROJECT_GAP = 0;
 const INTRO_FIXED_WORDS = 2;
 
 const countPortableTextCharacters = (blocks = []) => {
@@ -134,6 +134,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
     [fixedPrefixCharacters, introduction],
   );
   const introMeasurementRef = useRef(null);
+  const initialProjectsTopRef = useRef(null);
   const [visibleCharacters, setVisibleCharacters] = useState(totalIntroCharacters);
   const [fadeIntroductionOut, setFadeIntroductionOut] = useState(false);
 
@@ -149,13 +150,20 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
 
       const measurementHeight = introMeasurementRef.current?.offsetHeight || 0;
       const projectsTop = projectsBoundaryRef?.current?.getBoundingClientRect()?.top ?? 0;
+      const currentScrollY = window.scrollY || window.pageYOffset || 0;
 
       if (!totalIntroCharacters || !measurementHeight) {
         setVisibleCharacters(totalIntroCharacters);
         return;
       }
 
-      const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP);
+      if (initialProjectsTopRef.current === null || currentScrollY <= 1) {
+        initialProjectsTopRef.current = projectsTop;
+      }
+
+      const targetInitialProjectsTop = measurementHeight + INTRO_PROJECT_GAP;
+      const initialExcess = Math.max(0, (initialProjectsTopRef.current || 0) - targetInitialProjectsTop);
+      const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP - initialExcess);
       const clampedRatio = Math.max(0, Math.min(1, availableHeight / measurementHeight));
       const nextVisibleCharacters = fixedPrefixCharacters + Math.floor(dynamicIntroCharacters * clampedRatio);
 

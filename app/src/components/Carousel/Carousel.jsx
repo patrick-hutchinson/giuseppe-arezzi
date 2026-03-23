@@ -7,17 +7,17 @@ import styles from "./Carousel.module.css";
 
 import { motion } from "framer-motion";
 
-const Carousel = ({ array, onIndexChange }) => {
+const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
   if (!array) return;
   const hasMultipleSlides = array.length > 1;
-  const requiresLoopDuplication = array.length === 2;
-  const carouselMedia = requiresLoopDuplication ? [...array, ...array] : array;
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
-      loop: hasMultipleSlides,
+      align: "start",
+      loop: isInfinite,
       dragResistance: 1,
-      dragFree: hasMultipleSlides,
-      skipSnaps: hasMultipleSlides,
+      dragFree: true,
+      skipSnaps: true,
     },
     [],
   );
@@ -64,7 +64,6 @@ const Carousel = ({ array, onIndexChange }) => {
   }, []);
 
   useEffect(() => {
-    if (!hasMultipleSlides) return;
     if (!emblaApi) return;
 
     const updateIndex = () => {
@@ -81,10 +80,9 @@ const Carousel = ({ array, onIndexChange }) => {
       emblaApi.off("select", updateIndex);
       emblaApi.off("scroll", updateIndex);
     };
-  }, [emblaApi, array.length, hasMultipleSlides, onIndexChange]);
+  }, [emblaApi, array.length, onIndexChange]);
 
   useEffect(() => {
-    if (!hasMultipleSlides) return;
     if (!emblaApi) return;
 
     const handleKeyDown = (e) => {
@@ -106,7 +104,7 @@ const Carousel = ({ array, onIndexChange }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [emblaApi, hasMultipleSlides, isTopVisibleCarousel]);
+  }, [emblaApi, isTopVisibleCarousel]);
 
   useEffect(() => {
     return () => {
@@ -153,17 +151,18 @@ const Carousel = ({ array, onIndexChange }) => {
 
   return (
     <motion.div
-      className={`${styles.carousel_outer} ${hasMultipleSlides ? "embla" : ""} ${
-        !hasMultipleSlides ? styles.carouselStatic : ""
-      }`}
+      className={`${styles.carousel_outer} embla`}
       ref={setEmblaNode}
       data-carousel-id={carouselIdRef.current}
       onWheel={handleWheel}
     >
-      <div className={`${styles.carousel_inner} embla__container`}>
-        {carouselMedia.map((item, index) => {
+      <div className={`${styles.carousel_inner}`}>
+        {array.map((item, index) => {
+          const aspectRatio = item.medium.width / item.medium.height;
+          const slideWidth = `calc(80vh * ${aspectRatio})`;
+
           return (
-            <li key={`${item?._id ?? "slide"}-${index}`} className={`${styles.slide} embla__slide`}>
+            <li key={`${item?._id ?? "slide"}-${index}`} className={`${styles.slide} slide`} style={{ width: slideWidth }}>
               <Media medium={item.medium} />
             </li>
           );

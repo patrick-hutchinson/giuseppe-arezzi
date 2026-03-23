@@ -1,9 +1,7 @@
-import { useContext, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import styles from "./Projects.module.css";
 
-import Text from "@/components/Text/Text";
 import Carousel from "@/components/Carousel/Carousel";
 import ProjectHeader from "./ProjectHeader";
 import ProjectDescription from "./ProjectDescription";
@@ -18,6 +16,8 @@ const Project = ({ project, projectIndex = 0 }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const projectRef = useRef(null);
+  const lastPointerRef = useRef(null);
 
   if (!project) return;
 
@@ -39,6 +39,7 @@ const Project = ({ project, projectIndex = 0 }) => {
   const handleMouseMove = (event) => {
     if (isTouch) return;
     const bounds = event.currentTarget.getBoundingClientRect();
+    lastPointerRef.current = { x: event.clientX, y: event.clientY };
     setCursorPosition({
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top,
@@ -58,15 +59,55 @@ const Project = ({ project, projectIndex = 0 }) => {
   const handleMouseLeave = () => {
     if (isTouch) return;
     setIsHovering(false);
+    lastPointerRef.current = null;
   };
 
   const handleInfo = () => {
     setShowInfo((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (isTouch || !isHovering) return;
+
+    let frameId = null;
+
+    const updateCursorFromViewport = () => {
+      frameId = null;
+      if (!projectRef.current || !lastPointerRef.current) return;
+
+      const bounds = projectRef.current.getBoundingClientRect();
+      const { x, y } = lastPointerRef.current;
+
+      setCursorPosition({
+        x: x - bounds.left,
+        y: y - bounds.top,
+      });
+
+      setContainerSize({
+        width: bounds.width,
+        height: bounds.height,
+      });
+    };
+
+    const requestUpdate = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(updateCursorFromViewport);
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
+  }, [isHovering, isTouch]);
+
   return (
     <div
-      className={styles.project}
+      ref={projectRef}
+      className={`${styles.project}`}
       style={{ zIndex: projectIndex + 1 }}
       onMouseMove={isTouch ? undefined : handleMouseMove}
       onMouseEnter={isTouch ? undefined : handleMouseEnter}
@@ -93,13 +134,9 @@ const Project = ({ project, projectIndex = 0 }) => {
           isMobile={Boolean(useMobileInfoMode)}
         />
 
-        <motion.div
-          className={styles.projectCarouselWrap}
-          animate={{ x: useMobileInfoMode ? "0vw" : showInfo ? "25vw" : "0vw" }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <Carousel array={project.gallery} />
-        </motion.div>
+        <div className={styles.projectCarouselWrap}>
+          <Carousel array={project.gallery} isInfinite={true} />
+        </div>
       </div>
     </div>
   );
