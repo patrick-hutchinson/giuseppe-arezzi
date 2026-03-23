@@ -236,13 +236,13 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
               {home?.print?.map((printItem, index) => (
                 <motion.li
                   key={printItem?.title || index}
-                  typo={isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0 ? "bold" : undefined}
+                  typo={isMobile && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0 ? "bold" : undefined}
                   onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
                   onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
                   onClick={() => handlePrintClick(printItem)}
                   transition={{ duration: 0 }}
                   whileHover={{
-                    textIndent: isTouch ? "0px" : printItem.gallery ? "20px" : "0px",
+                    textIndent: isMobile ? "0px" : printItem.gallery ? "20px" : "0px",
                     fontWeight: printItem.gallery ? 700 : 400,
                     cursor: printItem.gallery ? "pointer" : "default",
                   }}
