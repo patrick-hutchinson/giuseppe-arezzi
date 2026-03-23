@@ -1,14 +1,12 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 import Text from "@/components/Text/Text";
-import { DeviceContext } from "@/context/DeviceContext";
 
 import styles from "../../Home.module.css";
 
 const INTRO_PROJECT_GAP = 0;
 const INTRO_FIXED_WORDS = 2;
-const MOBILE_OVERLAP_GUARD = 28;
 
 const countPortableTextCharacters = (blocks = []) => {
   return blocks.reduce((count, block) => {
@@ -127,7 +125,6 @@ const truncatePortableText = (blocks = [], maxCharacters = 0) => {
 };
 
 const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, awardsBoundaryRef, onReady }) => {
-  const { isTouch } = useContext(DeviceContext);
   const introduction = text || [];
   const totalIntroCharacters = useMemo(() => countPortableTextCharacters(introduction), [introduction]);
   const fixedPrefixCharacters = useMemo(() => getFixedPrefixCharacters(introduction, INTRO_FIXED_WORDS), [introduction]);
@@ -167,8 +164,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
 
       const targetInitialProjectsTop = measurementHeight + INTRO_PROJECT_GAP;
       const initialExcess = Math.max(0, (initialProjectsTopRef.current || 0) - targetInitialProjectsTop);
-      const overlapGuard = isTouch ? MOBILE_OVERLAP_GUARD : 0;
-      const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP - initialExcess - overlapGuard);
+      const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP - initialExcess);
       const clampedRatio = Math.max(0, Math.min(1, availableHeight / measurementHeight));
       const nextVisibleCharacters = fixedPrefixCharacters + Math.floor(dynamicIntroCharacters * clampedRatio);
 
@@ -205,7 +201,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
       if (frameId !== null) window.cancelAnimationFrame(frameId);
       if (resizeObserver) resizeObserver.disconnect();
     };
-  }, [dynamicIntroCharacters, fixedPrefixCharacters, isTouch, onReady, projectsBoundaryRef, totalIntroCharacters]);
+  }, [dynamicIntroCharacters, fixedPrefixCharacters, onReady, projectsBoundaryRef, totalIntroCharacters]);
 
   useEffect(() => {
     let frameId = null;

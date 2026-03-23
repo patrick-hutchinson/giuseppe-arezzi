@@ -15,7 +15,6 @@ const ProjectHeader = ({
   containerSize,
   disableCursorFollow = false,
   isMobile = false,
-  isLastProject = false,
 }) => {
   const isHoverActive = isHovering && !disableCursorFollow;
   const [isToggleHovered, setIsToggleHovered] = useState(false);
@@ -86,13 +85,13 @@ const ProjectHeader = ({
       <div
         className={`${styles.projectHeaderLayer} ${
           isMobile ? styles.projectHeaderLayerMobileSticky : ""
-        } ${isMobile && isLastProject ? styles.projectHeaderLayerMobileStickyLast : ""}`}
+        }`}
         typo="bold"
       >
         <div
           className={`${styles.projectHeaderMobile} ${
             isMobile ? styles.projectHeaderMobileSticky : ""
-          } ${isMobile && isLastProject ? styles.projectHeaderMobileStickyLast : ""}`}
+          }`}
         >
           <div className={styles.projectHeaderMobileMeta}>
             <span>{project.title},</span>
