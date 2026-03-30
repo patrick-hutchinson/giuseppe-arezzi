@@ -19,9 +19,16 @@
   touch-action: pan-y pinch-zoom;
 }
 .slide {
+  flex: 0 0 auto;
   height: 80vh;
   margin-right: 0;
   margin-left: -0.5px;
+}
+
+.spacerSlide {
+  flex: 0 0 auto;
+  height: 80vh;
+  pointer-events: none;
 }
 
 @media screen and (min-width: 320px) {

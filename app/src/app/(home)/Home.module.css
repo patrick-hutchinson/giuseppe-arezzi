@@ -287,16 +287,6 @@
   }
 } */
 
-.publicityCarousel :global(.embla) {
-  padding-left: 25%;
-}
-
-@media screen and (max-width: 768px) {
-  .publicityCarousel :global(.embla) {
-    padding-left: 50%;
-  }
-}
-
 main section:last-of-type {
   margin-bottom: 0 !important;
 }
@@ -308,6 +298,10 @@ main section:last-of-type {
 
 /* Tablets, iPads */
 @media screen and (min-width: 769px) {
+  .galleryOverlayNavigation {
+    font-size: var(--font-size-body);
+  }
+
   .galleryOverlayNavLeft {
     min-width: 200px;
     flex: 0 1 auto;
@@ -364,7 +358,4 @@ main section:last-of-type {
 
 /* Desktop */
 @media screen and (min-width: 1280px) {
-  .galleryOverlayNavigation {
-    font-size: var(--font-size-body);
-  }
 }

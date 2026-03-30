@@ -11,13 +11,12 @@ const Carousel = ({
   array,
   onIndexChange,
   isInfinite = false,
-  dragFree = true,
   autoScroll = true,
   containScroll = "trimSnaps",
-  endGap = 0,
+  leadingGap = 0,
+  trailingGap = 0,
 }) => {
   if (!array) return;
-  const hasMultipleSlides = array.length > 1;
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -25,8 +24,8 @@ const Carousel = ({
       loop: isInfinite,
       containScroll,
       dragResistance: 1,
-      dragFree,
-      skipSnaps: dragFree,
+      dragFree: true,
+      skipSnaps: true,
     },
     [],
   );
@@ -134,7 +133,6 @@ const Carousel = ({
   useEffect(() => {
     if (!autoScroll) return;
     if (!emblaApi) return;
-    if (!hasMultipleSlides) return;
     if (autoScrollStoppedRef.current) return;
 
     let previousTime = 0;
@@ -177,10 +175,9 @@ const Carousel = ({
         autoScrollRafRef.current = null;
       }
     };
-  }, [autoScroll, emblaApi, hasMultipleSlides, isCarouselInView]);
+  }, [autoScroll, emblaApi, isCarouselInView]);
 
   const handleWheel = (event) => {
-    if (!hasMultipleSlides) return;
     if (!emblaApi) return;
     if (!isTopVisibleCarousel()) return;
 
@@ -226,7 +223,10 @@ const Carousel = ({
       onWheel={handleWheel}
       onPointerDown={stopAutoScroll}
     >
-      <div className={`${styles.carousel_inner}`} style={{ paddingRight: endGap }}>
+      <div className={`${styles.carousel_inner}`} style={{ paddingRight: trailingGap }}>
+        {leadingGap ? (
+          <li className={styles.spacerSlide} style={{ width: leadingGap }} aria-hidden="true" role="presentation" />
+        ) : null}
         {array.map((item, index) => {
           const aspectRatio = item.medium.width / item.medium.height;
           const slideWidth = `calc(80vh * ${aspectRatio})`;

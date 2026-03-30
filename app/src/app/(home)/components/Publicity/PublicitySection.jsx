@@ -283,8 +283,9 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                   key={activePrint?._id || normalizedActivePrintIndex}
                   array={activeGallery}
                   autoScroll={false}
-                  containScroll={false}
-                  endGap="var(--margin-page)"
+                  containScroll="trimSnaps"
+                  leadingGap={isMobile ? "50vw" : "25vw"}
+                  trailingGap="var(--margin-page)"
                 />
               </div>
 
