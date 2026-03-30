@@ -282,7 +282,6 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 <Carousel
                   key={activePrint?._id || normalizedActivePrintIndex}
                   array={activeGallery}
-                  dragFree={false}
                   autoScroll={false}
                 />
               </div>
