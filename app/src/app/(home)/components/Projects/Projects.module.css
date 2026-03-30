@@ -171,6 +171,12 @@ button.toggleInfoMobile {
 }
 
 @media screen and (min-width: 769px) {
+  button.toggleInfo::before {
+    content: "";
+    position: absolute;
+    inset: -75px;
+  }
+
   button.toggleInfo {
     top: 10px;
     left: var(--margin-page);
