@@ -23,6 +23,16 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
   );
   const rootRef = useRef(null);
   const carouselIdRef = useRef(`carousel-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  const autoScrollStoppedRef = useRef(false);
+  const autoScrollRafRef = useRef(null);
+
+  const stopAutoScroll = useCallback(() => {
+    autoScrollStoppedRef.current = true;
+    if (autoScrollRafRef.current !== null) {
+      window.cancelAnimationFrame(autoScrollRafRef.current);
+      autoScrollRafRef.current = null;
+    }
+  }, []);
 
   const setEmblaNode = useCallback(
     (node) => {
@@ -104,6 +114,66 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
     };
   }, [emblaApi, isTopVisibleCarousel]);
 
+  useEffect(() => {
+    if (autoScrollStoppedRef.current) return;
+
+    const handlePageScroll = () => {
+      stopAutoScroll();
+    };
+
+    window.addEventListener("scroll", handlePageScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handlePageScroll);
+    };
+  }, [stopAutoScroll]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    if (!hasMultipleSlides) return;
+    if (autoScrollStoppedRef.current) return;
+
+    let previousTime = 0;
+
+    const tick = (time) => {
+      if (autoScrollStoppedRef.current) return;
+
+      autoScrollRafRef.current = window.requestAnimationFrame(tick);
+
+      if (!isTopVisibleCarousel()) {
+        previousTime = time;
+        return;
+      }
+
+      if (!previousTime) {
+        previousTime = time;
+        return;
+      }
+
+      const frameDelta = Math.min(64, time - previousTime);
+      previousTime = time;
+
+      const engine = emblaApi.internalEngine?.();
+      const canScrollByDistance =
+        Boolean(engine?.scrollTo?.distance) &&
+        Boolean(engine?.scrollBody?.useBaseFriction) &&
+        Boolean(engine?.scrollBody?.useDuration);
+
+      if (!canScrollByDistance) return;
+
+      // Gentle continuous drift that mimics a very slow autoplay.
+      engine.scrollTo.distance(frameDelta * -0.012, false);
+    };
+
+    autoScrollRafRef.current = window.requestAnimationFrame(tick);
+
+    return () => {
+      if (autoScrollRafRef.current !== null) {
+        window.cancelAnimationFrame(autoScrollRafRef.current);
+        autoScrollRafRef.current = null;
+      }
+    };
+  }, [emblaApi, hasMultipleSlides, isTopVisibleCarousel]);
+
   const handleWheel = (event) => {
     if (!hasMultipleSlides) return;
     if (!emblaApi) return;
@@ -115,6 +185,8 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
     const isShiftHorizontalIntent = event.shiftKey && absDeltaY > 8;
 
     if (!isHorizontalIntent && !isShiftHorizontalIntent) return;
+
+    stopAutoScroll();
 
     const wheelDelta = isHorizontalIntent ? event.deltaX : event.deltaY;
     const directionAdjustedDelta = -wheelDelta;
@@ -147,6 +219,7 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
       ref={setEmblaNode}
       data-carousel-id={carouselIdRef.current}
       onWheel={handleWheel}
+      onPointerDown={stopAutoScroll}
     >
       <div className={`${styles.carousel_inner}`}>
         {array.map((item, index) => {
