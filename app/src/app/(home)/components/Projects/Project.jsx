@@ -37,7 +37,7 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
   const useMobileInfoMode = isMobile || (isTablet && isPortrait);
 
   const handleMouseMove = (event) => {
-    if (isMobile) return;
+    if (isTouch) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     lastPointerRef.current = { x: event.clientX, y: event.clientY };
     setCursorPosition({
@@ -51,13 +51,13 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
   };
 
   const handleMouseEnter = (event) => {
-    if (isMobile) return;
+    if (isTouch) return;
     setIsHovering(true);
     handleMouseMove(event);
   };
 
   const handleMouseLeave = () => {
-    if (isMobile) return;
+    if (isTouch) return;
     setIsHovering(false);
     lastPointerRef.current = null;
   };
@@ -67,7 +67,7 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
   };
 
   useEffect(() => {
-    if (isMobile || !isHovering) return;
+    if (isTouch || !isHovering) return;
 
     let frameId = null;
 
@@ -102,16 +102,16 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
       window.removeEventListener("resize", requestUpdate);
       if (frameId !== null) window.cancelAnimationFrame(frameId);
     };
-  }, [isHovering, isMobile]);
+  }, [isHovering, isTouch]);
 
   return (
     <div
       ref={projectRef}
       className={`${styles.project}`}
       style={{ zIndex: projectIndex + 1 }}
-      onMouseMove={isMobile ? undefined : handleMouseMove}
-      onMouseEnter={isMobile ? undefined : handleMouseEnter}
-      onMouseLeave={isMobile ? undefined : handleMouseLeave}
+      onMouseMove={isTouch ? undefined : handleMouseMove}
+      onMouseEnter={isTouch ? undefined : handleMouseEnter}
+      onMouseLeave={isTouch ? undefined : handleMouseLeave}
     >
       <ProjectHeader
         project={project}
@@ -121,7 +121,7 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
         showInfo={showInfo}
         hideTitle={isInfoPanelHovered}
         containerSize={containerSize}
-        disableCursorFollow={Boolean(isMobile)}
+        disableCursorFollow={Boolean(isTouch)}
         isMobile={Boolean(isMobile)}
         isLastProject={isLastProject}
       />
