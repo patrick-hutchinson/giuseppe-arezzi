@@ -37,24 +37,6 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
   const previousPrintIndex = hasActivePrint ? getWrappedIndex(normalizedActivePrintIndex - 1, galleryCount) : null;
   const nextPrintIndex = hasActivePrint ? getWrappedIndex(normalizedActivePrintIndex + 1, galleryCount) : null;
 
-  const singleMobileImage = Array.isArray(activeGallery) && activeGallery.length === 1 ? activeGallery[0] : null;
-  const isSingleMobilePortraitImage =
-    Boolean(isMobile) &&
-    singleMobileImage?.medium?.type === "image" &&
-    typeof singleMobileImage?.medium?.width === "number" &&
-    typeof singleMobileImage?.medium?.height === "number" &&
-    singleMobileImage.medium.height > singleMobileImage.medium.width;
-  const isSingleMobileLandscapeImage =
-    Boolean(isMobile) &&
-    singleMobileImage?.medium?.type === "image" &&
-    typeof singleMobileImage?.medium?.width === "number" &&
-    typeof singleMobileImage?.medium?.height === "number" &&
-    singleMobileImage.medium.width >= singleMobileImage.medium.height;
-  const singleMobileLandscapeAspect =
-    isSingleMobileLandscapeImage && singleMobileImage?.medium?.height
-      ? singleMobileImage.medium.width / singleMobileImage.medium.height
-      : null;
-
   const handlePrintHoverStart = (printItem) => {
     if (isMobile) return;
     const firstGalleryItem = printItem?.gallery?.[0];
@@ -296,26 +278,14 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 </div>
               ) : null}
 
-              {isSingleMobilePortraitImage ? (
-                <div className={styles.singleMobileGalleryImage}>
-                  <Media medium={singleMobileImage?.medium} eager />
-                </div>
-              ) : isSingleMobileLandscapeImage ? (
-                <div className={styles.singleMobileLandscapePan}>
-                  <div
-                    className={styles.singleMobileLandscapeFrame}
-                    style={
-                      singleMobileLandscapeAspect ? { width: `calc(90dvh * ${singleMobileLandscapeAspect})` } : undefined
-                    }
-                  >
-                    <Media medium={singleMobileImage?.medium} eager contain />
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <Carousel array={activeGallery} />
-                </div>
-              )}
+              <div>
+                <Carousel
+                  key={activePrint?._id || normalizedActivePrintIndex}
+                  array={activeGallery}
+                  dragFree={false}
+                  autoScroll={false}
+                />
+              </div>
 
               <div className={styles.galleryOverlayNavigation}>
                 <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>

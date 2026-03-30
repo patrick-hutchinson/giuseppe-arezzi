@@ -7,7 +7,7 @@ import styles from "./Carousel.module.css";
 
 import { motion } from "framer-motion";
 
-const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
+const Carousel = ({ array, onIndexChange, isInfinite = false, dragFree = true, autoScroll = true }) => {
   if (!array) return;
   const hasMultipleSlides = array.length > 1;
 
@@ -16,8 +16,8 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
       align: "start",
       loop: isInfinite,
       dragResistance: 1,
-      dragFree: true,
-      skipSnaps: true,
+      dragFree,
+      skipSnaps: dragFree,
     },
     [],
   );
@@ -41,6 +41,14 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
     },
     [emblaRef],
   );
+
+  const isCarouselInView = useCallback(() => {
+    const currentNode = rootRef.current;
+    if (!currentNode) return false;
+
+    const rect = currentNode.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight;
+  }, []);
 
   const isTopVisibleCarousel = useCallback(() => {
     const currentNode = rootRef.current;
@@ -115,19 +123,7 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
   }, [emblaApi, isTopVisibleCarousel]);
 
   useEffect(() => {
-    if (autoScrollStoppedRef.current) return;
-
-    const handlePageScroll = () => {
-      stopAutoScroll();
-    };
-
-    window.addEventListener("scroll", handlePageScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handlePageScroll);
-    };
-  }, [stopAutoScroll]);
-
-  useEffect(() => {
+    if (!autoScroll) return;
     if (!emblaApi) return;
     if (!hasMultipleSlides) return;
     if (autoScrollStoppedRef.current) return;
@@ -139,7 +135,7 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
 
       autoScrollRafRef.current = window.requestAnimationFrame(tick);
 
-      if (!isTopVisibleCarousel()) {
+      if (!isCarouselInView()) {
         previousTime = time;
         return;
       }
@@ -172,7 +168,7 @@ const Carousel = ({ array, onIndexChange, isInfinite = false }) => {
         autoScrollRafRef.current = null;
       }
     };
-  }, [emblaApi, hasMultipleSlides, isTopVisibleCarousel]);
+  }, [autoScroll, emblaApi, hasMultipleSlides, isCarouselInView]);
 
   const handleWheel = (event) => {
     if (!hasMultipleSlides) return;
