@@ -7,7 +7,15 @@ import styles from "./Carousel.module.css";
 
 import { motion } from "framer-motion";
 
-const Carousel = ({ array, onIndexChange, isInfinite = false, dragFree = true, autoScroll = true }) => {
+const Carousel = ({
+  array,
+  onIndexChange,
+  isInfinite = false,
+  dragFree = true,
+  autoScroll = true,
+  containScroll = "trimSnaps",
+  endGap = 0,
+}) => {
   if (!array) return;
   const hasMultipleSlides = array.length > 1;
 
@@ -15,6 +23,7 @@ const Carousel = ({ array, onIndexChange, isInfinite = false, dragFree = true, a
     {
       align: "start",
       loop: isInfinite,
+      containScroll,
       dragResistance: 1,
       dragFree,
       skipSnaps: dragFree,
@@ -217,7 +226,7 @@ const Carousel = ({ array, onIndexChange, isInfinite = false, dragFree = true, a
       onWheel={handleWheel}
       onPointerDown={stopAutoScroll}
     >
-      <div className={`${styles.carousel_inner}`}>
+      <div className={`${styles.carousel_inner}`} style={{ paddingRight: endGap }}>
         {array.map((item, index) => {
           const aspectRatio = item.medium.width / item.medium.height;
           const slideWidth = `calc(80vh * ${aspectRatio})`;
