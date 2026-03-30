@@ -291,17 +291,27 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
 
               <div className={styles.galleryOverlayNavigation}>
                 <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
-                  <span typo="bold">←</span>
+                  <span typo="bold" style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
+                    ←
+                  </span>
                   {!isMobile ? <span>{printItemsWithGallery[previousPrintIndex]?.title}</span> : null}
                 </button>
 
-                <button type="button" className={styles.galleryOverlayClose} onClick={closeGalleryOverlay} typo="bold">
+                <button
+                  type="button"
+                  className={styles.galleryOverlayClose}
+                  onClick={closeGalleryOverlay}
+                  typo="bold"
+                  style={{ fontSize: "22px" }}
+                >
                   ×
                 </button>
 
                 <button type="button" className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
                   {!isMobile ? <span>{printItemsWithGallery[nextPrintIndex]?.title}</span> : null}
-                  <span typo="bold">→</span>
+                  <span typo="bold" style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
+                    →
+                  </span>
                 </button>
               </div>
             </motion.div>

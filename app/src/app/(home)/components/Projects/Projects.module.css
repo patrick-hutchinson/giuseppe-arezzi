@@ -59,7 +59,7 @@
   padding-right: 0;
   line-height: 1;
   z-index: 1;
-  font-size: 30px;
+  font-size: 22px;
   padding-top: calc(1.2em + 17px);
   padding-right: 8px;
 }
@@ -145,7 +145,7 @@ button.toggleInfo {
   align-items: center;
   justify-content: center;
   touch-action: manipulation;
-  font-size: 30px;
+  font-size: 22px;
 }
 
 button.toggleInfoMobile {
