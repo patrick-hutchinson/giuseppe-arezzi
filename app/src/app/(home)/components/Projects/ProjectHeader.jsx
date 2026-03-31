@@ -82,26 +82,14 @@ const ProjectHeader = ({
 
   if (disableCursorFollow) {
     return (
-      <div
-        className={`${styles.projectHeaderLayer} ${
-          isMobile ? styles.projectHeaderLayerMobileSticky : ""
-        }`}
-        typo="bold"
-      >
-        <div
-          className={`${styles.projectHeaderMobile} ${
-            isMobile ? styles.projectHeaderMobileSticky : ""
-          }`}
-        >
+      <div className={`${styles.projectHeaderLayer} ${isMobile ? styles.projectHeaderLayerMobileSticky : ""}`} typo="bold">
+        <div className={`${styles.projectHeaderMobile} ${isMobile ? styles.projectHeaderMobileSticky : ""}`}>
           <div className={styles.projectHeaderMobileMeta}>
             <span>{project.title},</span>
             <span>{project.edition},</span>
             <span>{project.year}</span>
           </div>
-          <button
-            className={`${styles.toggleInfo} ${styles.toggleInfoMobile}`}
-            onClick={handleInfo}
-          >
+          <button className={`${styles.toggleInfo} ${styles.toggleInfoMobile}`} onClick={handleInfo}>
             {showInfo ? "-" : "+"}
           </button>
         </div>
@@ -135,25 +123,27 @@ const ProjectHeader = ({
         animate={{ opacity: shouldHideTitle ? 0 : 1, x: targetX, y: targetY }}
         transition={{
           opacity: { duration: 0.18, ease: "easeOut" },
-          x: isHoverActive && hasSnappedToCursor
-            ? { duration: 0 }
-            : {
-                type: "spring",
-                stiffness: 540,
-                damping: 44,
-                mass: 0.35,
-              },
-          y: isHoverActive && hasSnappedToCursor
-            ? { duration: 0 }
-            : {
-                type: "spring",
-                stiffness: 540,
-                damping: 44,
-                mass: 0.35,
-              },
+          x:
+            isHoverActive && hasSnappedToCursor
+              ? { duration: 0 }
+              : {
+                  type: "spring",
+                  stiffness: 540,
+                  damping: 44,
+                  mass: 0.35,
+                },
+          y:
+            isHoverActive && hasSnappedToCursor
+              ? { duration: 0 }
+              : {
+                  type: "spring",
+                  stiffness: 540,
+                  damping: 44,
+                  mass: 0.35,
+                },
         }}
       >
-        {project.title}, Edition {project.edition}, {project.year}
+        {project.title}, {project.edition}, {project.year}
       </motion.div>
     </div>
   );
