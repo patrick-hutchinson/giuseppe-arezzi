@@ -182,24 +182,26 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.22, ease: "easeOut" }}
               >
-                <div ref={awardsSectionRef}>
-                  <div typo="bold">Awards</div>
-                  <Text text={home.awards} />
-                </div>
-                <div>
-                  <div typo="bold">Acquisitions</div>
-                  <Text text={home.acquisitions} />
-                </div>
-                <div>
-                  <div typo="bold">Selected Clients</div>
-                  <Text text={home.clients} />
-                </div>
-                <div>
-                  <div typo="bold">Past Collaborators</div>
-                  <Text text={home.collaborators} />
+                <div className={styles.publicityGroupMain}>
+                  <div ref={awardsSectionRef}>
+                    <div typo="bold">Awards</div>
+                    <Text text={home.awards} />
+                  </div>
+                  <div>
+                    <div typo="bold">Acquisitions</div>
+                    <Text text={home.acquisitions} />
+                  </div>
+                  <div>
+                    <div typo="bold">Selected Clients</div>
+                    <Text text={home.clients} />
+                  </div>
+                  <div>
+                    <div typo="bold">Past Collaborators</div>
+                    <Text text={home.collaborators} />
+                  </div>
                 </div>
                 {!isMobile ? (
-                  <div style={{ gap: "0px" }}>
+                  <div className={styles.publicityGroupFooterContact} style={{ gap: "0px" }}>
                     For any enquiries, press, or internship requests, feel free to get in touch at{" "}
                     <span typo="bold">{site?.email}</span>
                   </div>

@@ -108,7 +108,7 @@
   /* margin-top: var(--margin-2); */
 }
 
-.publicityGroupContent > div {
+.publicityGroupMain {
   display: flex;
   flex-direction: column;
   gap: var(--margin-3);
@@ -335,6 +335,22 @@ main section:last-of-type {
     grid-column: 1 / 3;
     grid-row: 1;
   }
+
+  .publicityGroupContent {
+    min-height: var(--content-vh);
+    justify-content: space-between;
+  }
+
+  .publicityGroupMain {
+    gap: var(--margin-2);
+  }
+
+  .publicityGroupMain > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--margin-3);
+  }
+
   .publicityMetaColumn {
     grid-column: 3 / 4;
     grid-row: 1;
