@@ -1,5 +1,17 @@
 import { mediaAssetFragment } from "./fragments";
 
+const projectFields = `
+  _id,
+  _type,
+  year,
+  title,
+  credits,
+  edition,
+  description,
+  gallery[] ${mediaAssetFragment},
+  slug
+`;
+
 export const siteQuery = `*[_type=="site"][0]{
   title,
   googleDescription,
@@ -24,14 +36,6 @@ export const homeQuery = `*[_type=="home"][0]{
   collaborators
 }`;
 
-export const projectsQuery = `*[_type=="project"]{
-  _id,
-  _type,
-  year,
-  title,
-  credits,
-  edition,
-  description,
-  gallery[] ${mediaAssetFragment},
-  slug
+export const projectsQuery = `*[_type=="project"]|order(orderRank){
+  ${projectFields}
 }`;

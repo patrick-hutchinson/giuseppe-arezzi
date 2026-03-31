@@ -1,4 +1,5 @@
 import type {StructureResolver} from 'sanity/structure'
+import {orderableDocumentListDeskItem} from '@sanity/orderable-document-list'
 
 import {DashboardIcon} from '@sanity/icons'
 import {MasterDetailIcon} from '@sanity/icons'
@@ -33,10 +34,18 @@ export const structure: StructureResolver = (S, context) =>
             ]),
         ),
 
+      orderableDocumentListDeskItem({
+        type: 'project',
+        title: 'Projects',
+        S,
+        context,
+      }),
+
       // Everything else (exclude hidden types and the ones we added above)
       ...S.documentTypeListItems().filter(
         (listItem) =>
           !hiddenTypes.includes(listItem.getId()!) &&
+          !['project'].includes(listItem.getId()!) &&
           !['eventType', 'colorPair', 'venue', 'speaker', 'event'].includes(listItem.getId()!),
       ),
     ])
