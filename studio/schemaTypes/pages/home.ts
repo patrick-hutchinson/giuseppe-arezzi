@@ -5,12 +5,12 @@ export const home = defineType({
   title: 'Home',
   type: 'document',
   fields: [
-    defineField({
-      name: 'announcement',
-      title: 'Announcement',
-      type: 'array',
-      of: [{type: 'block'}],
-    }),
+    // defineField({
+    //   name: 'announcement',
+    //   title: 'Announcement',
+    //   type: 'array',
+    //   of: [{type: 'block'}],
+    // }),
     defineField({
       name: 'introduction',
       title: 'Introduction',
