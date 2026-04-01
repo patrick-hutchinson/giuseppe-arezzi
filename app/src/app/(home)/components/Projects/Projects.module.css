@@ -4,6 +4,7 @@
   position: relative;
   left: calc(-1 * var(--margin-page));
   overflow: hidden;
+  isolation: isolate;
 }
 
 .projectCarouselWrap * {
@@ -84,6 +85,8 @@
   inset: 0;
   z-index: 4;
   pointer-events: none;
+  color: #fff;
+  mix-blend-mode: difference;
 }
 
 .projectHeaderLayerMobileSticky {
@@ -146,6 +149,7 @@ button.toggleInfo {
   justify-content: center;
   touch-action: manipulation;
   font-size: 22px;
+  color: inherit;
 }
 
 button.toggleInfoMobile {
