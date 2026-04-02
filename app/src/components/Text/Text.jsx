@@ -12,7 +12,8 @@ const Text = ({ text, typo, className }) => {
               return <strong typo="bold">{children}</strong>;
             },
             link: ({ value, children }) => {
-              const href = value?.href || value?.link;
+              const href = value?.href || value?.url || value?.link;
+              if (!href) return <span>{children}</span>;
               return (
                 <a className={styles.textLink} href={href} target="_blank" rel="noopener noreferrer">
                   {children}

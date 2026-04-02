@@ -27,7 +27,17 @@ export const homeQuery = `*[_type=="home"][0]{
   awards,
   acquisitions,
   clients,
-  web,
+  web[]{
+    ...,
+    markDefs[]{
+      ...,
+      "href": select(
+        type == "external" => url,
+        type == "internal" && defined(internalLink->slug.current) => "/" + internalLink->slug.current,
+        null
+      )
+    }
+  },
   print[]{
     title,
     url,
