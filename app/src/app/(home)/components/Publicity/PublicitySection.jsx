@@ -223,7 +223,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
           <div className={styles.publicityMetaContent}>
             <div className={styles.publicityPrint}>
               <div typo="bold" className={styles.publicityChipLabel} style={{ marginBottom: "var(--margin-3)" }}>
-                Selected Print
+                Press
               </div>
               <ul>
                 {home?.print?.map((printItem, index) => (

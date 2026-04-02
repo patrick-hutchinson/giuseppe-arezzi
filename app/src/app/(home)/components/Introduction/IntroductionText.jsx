@@ -151,6 +151,8 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
       const measurementHeight = measurementRect?.height || 0;
       const introTop = measurementRect?.top || 0;
       const projectsTop = projectsBoundaryRef?.current?.getBoundingClientRect()?.top ?? 0;
+      const marginPage = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--margin-page"));
+      const deletionBuffer = Number.isFinite(marginPage) ? marginPage : 0;
 
       if (!totalIntroCharacters || !measurementHeight) {
         setVisibleCharacters(totalIntroCharacters);
@@ -159,7 +161,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
 
       // Strictly map visible text to the live vertical space between intro top and projects top.
       // This guarantees deletion keeps pace and prevents overlap with incoming media.
-      const availableHeight = Math.max(0, projectsTop - introTop - INTRO_PROJECT_GAP);
+      const availableHeight = Math.max(0, projectsTop - introTop - INTRO_PROJECT_GAP - deletionBuffer);
       const clampedRatio = Math.max(0, Math.min(1, availableHeight / measurementHeight));
       const minVisibleCharacters = headerVisible ? fixedPrefixCharacters : 0;
       const nextVisibleCharacters = Math.max(minVisibleCharacters, Math.floor(totalIntroCharacters * clampedRatio));
