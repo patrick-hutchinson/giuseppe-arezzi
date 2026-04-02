@@ -128,11 +128,13 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
   const introduction = text || [];
   const totalIntroCharacters = useMemo(() => countPortableTextCharacters(introduction), [introduction]);
   const fixedPrefixCharacters = useMemo(() => getFixedPrefixCharacters(introduction, INTRO_FIXED_WORDS), [introduction]);
+  const dynamicIntroCharacters = Math.max(0, totalIntroCharacters - fixedPrefixCharacters);
   const fixedPrefixText = useMemo(
     () => getPortableTextContent(introduction).slice(0, fixedPrefixCharacters),
     [fixedPrefixCharacters, introduction],
   );
   const introMeasurementRef = useRef(null);
+  const initialProjectsTopRef = useRef(null);
   const hasReportedReadyRef = useRef(false);
   const [visibleCharacters, setVisibleCharacters] = useState(totalIntroCharacters);
   const [fadeIntroductionOut, setFadeIntroductionOut] = useState(false);
@@ -147,24 +149,24 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
     const updateVisibleCharacters = () => {
       frameId = null;
 
-      const measurementRect = introMeasurementRef.current?.getBoundingClientRect?.();
-      const measurementHeight = measurementRect?.height || 0;
-      const introTop = measurementRect?.top || 0;
+      const measurementHeight = introMeasurementRef.current?.offsetHeight || 0;
       const projectsTop = projectsBoundaryRef?.current?.getBoundingClientRect()?.top ?? 0;
-      const marginPage = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--margin-page"));
-      const deletionBuffer = Number.isFinite(marginPage) ? marginPage : 0;
+      const currentScrollY = window.scrollY || window.pageYOffset || 0;
 
       if (!totalIntroCharacters || !measurementHeight) {
         setVisibleCharacters(totalIntroCharacters);
         return;
       }
 
-      // Strictly map visible text to the live vertical space between intro top and projects top.
-      // This guarantees deletion keeps pace and prevents overlap with incoming media.
-      const availableHeight = Math.max(0, projectsTop - introTop - INTRO_PROJECT_GAP - deletionBuffer);
+      if (initialProjectsTopRef.current === null || currentScrollY <= 1) {
+        initialProjectsTopRef.current = projectsTop;
+      }
+
+      const targetInitialProjectsTop = measurementHeight + INTRO_PROJECT_GAP;
+      const initialExcess = Math.max(0, (initialProjectsTopRef.current || 0) - targetInitialProjectsTop);
+      const availableHeight = Math.max(0, projectsTop - INTRO_PROJECT_GAP - initialExcess);
       const clampedRatio = Math.max(0, Math.min(1, availableHeight / measurementHeight));
-      const minVisibleCharacters = headerVisible ? fixedPrefixCharacters : 0;
-      const nextVisibleCharacters = Math.max(minVisibleCharacters, Math.floor(totalIntroCharacters * clampedRatio));
+      const nextVisibleCharacters = fixedPrefixCharacters + Math.floor(dynamicIntroCharacters * clampedRatio);
 
       setVisibleCharacters((currentVisibleCharacters) => {
         if (currentVisibleCharacters === nextVisibleCharacters) return currentVisibleCharacters;
@@ -199,7 +201,7 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
       if (frameId !== null) window.cancelAnimationFrame(frameId);
       if (resizeObserver) resizeObserver.disconnect();
     };
-  }, [fixedPrefixCharacters, headerVisible, onReady, projectsBoundaryRef, totalIntroCharacters]);
+  }, [dynamicIntroCharacters, fixedPrefixCharacters, onReady, projectsBoundaryRef, totalIntroCharacters]);
 
   useEffect(() => {
     let frameId = null;
