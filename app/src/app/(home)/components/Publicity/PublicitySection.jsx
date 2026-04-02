@@ -221,30 +221,42 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
 
         <div className={`${styles.publicityMetaColumn} ${styles.publicityColumn}`}>
           <div className={styles.publicityMetaContent}>
-            <div className={styles.publicityPrint}>
-              <div typo="bold" className={styles.publicityChipLabel} style={{ marginBottom: "var(--margin-3)" }}>
-                Press
+            <div>
+              <div className={styles.publicityPrint}>
+                <div typo="bold" className={styles.publicityChipLabel} style={{ marginBottom: "var(--margin-3)" }}>
+                  Press
+                </div>
+                <ul>
+                  {home?.print?.map((printItem, index) => (
+                    <motion.li
+                      key={printItem?.title || index}
+                      className={styles.publicityChipItem}
+                      typo={
+                        isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0 ? "bold" : undefined
+                      }
+                      onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
+                      onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
+                      onClick={() => handlePrintClick(printItem)}
+                      transition={{ duration: 0 }}
+                      whileHover={{
+                        cursor: printItem.gallery ? "pointer" : "default",
+                        backgroundColor: printItem.gallery ? "#000" : "#fff",
+                        color: printItem.gallery ? "#fff" : "#000",
+                      }}
+                    >
+                      {printItem.title}
+                    </motion.li>
+                  ))}
+                </ul>
               </div>
-              <ul>
-                {home?.print?.map((printItem, index) => (
-                  <motion.li
-                    key={printItem?.title || index}
-                    className={styles.publicityChipItem}
-                    typo={isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0 ? "bold" : undefined}
-                    onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
-                    onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
-                    onClick={() => handlePrintClick(printItem)}
-                    transition={{ duration: 0 }}
-                    whileHover={{
-                      cursor: printItem.gallery ? "pointer" : "default",
-                      backgroundColor: printItem.gallery ? "#000" : "#fff",
-                      color: printItem.gallery ? "#fff" : "#000",
-                    }}
-                  >
-                    {printItem.title}
-                  </motion.li>
-                ))}
-              </ul>
+
+              <div className={styles.publicityWeb}>
+                <div typo="bold" className={styles.publicityChipLabel} style={{ marginBottom: "var(--margin-3)" }}>
+                  More On:
+                </div>
+                <Text text={home?.web} />
+              </div>
+
               {isMobile ? (
                 <div className={styles.publicityMobileContactGrid}>
                   <div className={styles.publicityMobileContactMain}>

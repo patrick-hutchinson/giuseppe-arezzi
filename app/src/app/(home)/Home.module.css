@@ -123,7 +123,7 @@
 .publicityGroupMain {
   display: flex;
   flex-direction: column;
-  gap: var(--margin-3);
+  gap: var(--margin-2);
 }
 
 .publicityPreview {
