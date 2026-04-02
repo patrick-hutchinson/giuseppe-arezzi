@@ -195,6 +195,12 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                     <div typo="bold">Selected Clients</div>
                     <Text text={home.clients} />
                   </div>
+                  {home.currentCollaborators?.length > 0 && (
+                    <div>
+                      <div typo="bold">Current Collaborators</div>
+                      <Text text={home.currentCollaborators} />
+                    </div>
+                  )}
                   <div>
                     <div typo="bold">Past Collaborators</div>
                     <Text text={home.collaborators} />
@@ -240,11 +246,28 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 ))}
               </ul>
               {isMobile ? (
-                <div style={{ gap: "0px", marginTop: "var(--margin-2)" }}>
-                  For any enquiries, press, or internship requests, feel free to get in touch at{" "}
-                  <a href={`mailto:${site?.email || ""}`} className={styles.publicityContactEmail}>
-                    {site?.email}
-                  </a>
+                <div className={styles.publicityMobileContactGrid}>
+                  <div className={styles.publicityMobileContactMain}>
+                    For any enquiries, press, or internship requests, feel free to get in touch at{" "}
+                    <a href={`mailto:${site?.email || ""}`} className={styles.publicityContactEmail}>
+                      {site?.email}
+                    </a>
+                  </div>
+                  <div className={styles.publicityMobileContactSocials}>
+                    {Array.isArray(site?.socials) && site.socials.length > 0
+                      ? site.socials.map((social, index) => (
+                          <a
+                            key={`${social?.platform || "social-mobile"}-${index}`}
+                            href={social?.link || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.publicityContactEmail}
+                          >
+                            {social?.platform || social?.link}
+                          </a>
+                        ))
+                      : null}
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -253,7 +276,12 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
               <div className={styles.publicityMetaFooterSocials}>
                 {site.socials.map((social, index) => (
                   <span key={`${social?.platform || "social"}-${index}`}>
-                    <a href={social?.link || "#"} target="_blank" rel="noopener noreferrer" className={styles.publicityContactEmail}>
+                    <a
+                      href={social?.link || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.publicityContactEmail}
+                    >
                       {social?.platform || social?.link}
                     </a>
                     {index < site.socials.length - 1 ? ", " : ""}
@@ -314,9 +342,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
               <div className={styles.galleryOverlayNavigation}>
                 <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
                   <span className={styles.galleryOverlayNavContent}>
-                    <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
-                      ←
-                    </span>
+                    <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>←</span>
                     {!isMobile ? <span>{printItemsWithGallery[previousPrintIndex]?.title}</span> : null}
                   </span>
                 </button>
@@ -333,9 +359,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 <button type="button" className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
                   <span className={styles.galleryOverlayNavContent}>
                     {!isMobile ? <span>{printItemsWithGallery[nextPrintIndex]?.title}</span> : null}
-                    <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
-                      →
-                    </span>
+                    <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>→</span>
                   </span>
                 </button>
               </div>

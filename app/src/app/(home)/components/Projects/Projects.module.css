@@ -129,6 +129,13 @@
   flex-direction: column;
 }
 
+.projectHeaderMobileMeta > span {
+  width: fit-content;
+  color: #000;
+  background: #fff;
+  padding: 0 1.5px;
+}
+
 button.toggleInfo {
   position: absolute;
   top: var(--margin-page);

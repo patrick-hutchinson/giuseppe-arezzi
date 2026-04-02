@@ -30,7 +30,13 @@ export const home = defineType({
       type: 'portableText',
     }),
     defineField({
+      name: 'currentCollaborators',
+      title: 'Current Collaborators',
+      type: 'portableText',
+    }),
+    defineField({
       name: 'collaborators',
+      title: 'Past Collaborators',
       type: 'portableText',
     }),
     defineField({

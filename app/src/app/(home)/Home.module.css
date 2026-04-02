@@ -345,6 +345,13 @@ main section:last-of-type {
   margin-top: var(--margin-2);
 }
 
+.publicityPrint ul {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* gap: var(--margin-3); */
+}
+
 .publicityChipLabel {
   display: inline-block;
   width: fit-content;
@@ -383,6 +390,26 @@ main section:last-of-type {
   display: flex;
   flex-wrap: wrap;
   gap: var(--margin-3);
+}
+
+.publicityMobileContactGrid {
+  margin-top: var(--margin-2);
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: var(--margin-2);
+  align-items: flex-end;
+}
+
+.publicityMobileContactMain {
+  gap: 0;
+}
+
+.publicityMobileContactSocials {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--margin-3);
+  align-items: flex-end;
 }
 
 /* Tablets, iPads */
