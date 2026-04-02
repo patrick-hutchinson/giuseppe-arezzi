@@ -33,7 +33,8 @@ export const homeQuery = `*[_type=="home"][0]{
     url,
     gallery[] ${mediaAssetFragment}
   },
-  collaborators
+  collaborators,
+  currentCollaborators
 }`;
 
 export const projectsQuery = `*[_type=="project"]|order(orderRank){

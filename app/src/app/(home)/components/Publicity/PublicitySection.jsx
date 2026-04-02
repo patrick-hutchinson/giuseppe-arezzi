@@ -195,7 +195,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                     <div typo="bold">Selected Clients</div>
                     <Text text={home.clients} />
                   </div>
-                  {home.currentCollaborators?.length > 0 && (
+                  {home.currentCollaborators && (
                     <div>
                       <div typo="bold">Current Collaborators</div>
                       <Text text={home.currentCollaborators} />
