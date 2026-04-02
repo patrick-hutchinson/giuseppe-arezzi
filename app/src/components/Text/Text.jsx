@@ -1,4 +1,5 @@
 import { PortableText } from "@portabletext/react";
+import styles from "./Text.module.css";
 
 const Text = ({ text, typo, className }) => {
   return (
@@ -13,7 +14,7 @@ const Text = ({ text, typo, className }) => {
             link: ({ value, children }) => {
               const href = value?.href || value?.link;
               return (
-                <a href={href} target="_blank" rel="noopener noreferrer">
+                <a className={styles.textLink} href={href} target="_blank" rel="noopener noreferrer">
                   {children}
                 </a>
               );

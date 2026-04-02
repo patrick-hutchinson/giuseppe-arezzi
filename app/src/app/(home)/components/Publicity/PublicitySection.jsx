@@ -203,7 +203,9 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 {!isMobile ? (
                   <div className={styles.publicityGroupFooterContact} style={{ gap: "0px" }}>
                     For any enquiries, press, or internship requests, feel free to get in touch at{" "}
-                    <span typo="bold">{site?.email}</span>
+                    <a href={`mailto:${site?.email || ""}`} className={styles.publicityContactEmail}>
+                      {site?.email}
+                    </a>
                   </div>
                 ) : null}
               </motion.div>
@@ -212,33 +214,51 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
         </div>
 
         <div className={`${styles.publicityMetaColumn} ${styles.publicityColumn}`}>
-          <div className={styles.publicityPrint}>
-            <div typo="bold" style={{ marginBottom: "var(--margin-3)" }}>
-              Selected Print
+          <div className={styles.publicityMetaContent}>
+            <div className={styles.publicityPrint}>
+              <div typo="bold" className={styles.publicityChipLabel} style={{ marginBottom: "var(--margin-3)" }}>
+                Selected Print
+              </div>
+              <ul>
+                {home?.print?.map((printItem, index) => (
+                  <motion.li
+                    key={printItem?.title || index}
+                    className={styles.publicityChipItem}
+                    typo={isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0 ? "bold" : undefined}
+                    onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
+                    onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
+                    onClick={() => handlePrintClick(printItem)}
+                    transition={{ duration: 0 }}
+                    whileHover={{
+                      cursor: printItem.gallery ? "pointer" : "default",
+                      backgroundColor: printItem.gallery ? "#000" : "#fff",
+                      color: printItem.gallery ? "#fff" : "#000",
+                    }}
+                  >
+                    {printItem.title}
+                  </motion.li>
+                ))}
+              </ul>
+              {isMobile ? (
+                <div style={{ gap: "0px", marginTop: "var(--margin-2)" }}>
+                  For any enquiries, press, or internship requests, feel free to get in touch at{" "}
+                  <a href={`mailto:${site?.email || ""}`} className={styles.publicityContactEmail}>
+                    {site?.email}
+                  </a>
+                </div>
+              ) : null}
             </div>
-            <ul>
-              {home?.print?.map((printItem, index) => (
-                <motion.li
-                  key={printItem?.title || index}
-                  typo={isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0 ? "bold" : undefined}
-                  onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
-                  onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
-                  onClick={() => handlePrintClick(printItem)}
-                  transition={{ duration: 0 }}
-                  whileHover={{
-                    textIndent: isTouch ? "0px" : printItem.gallery ? "20px" : "0px",
-                    fontWeight: printItem.gallery ? 700 : 400,
-                    cursor: printItem.gallery ? "pointer" : "default",
-                  }}
-                >
-                  {printItem.title}
-                </motion.li>
-              ))}
-            </ul>
-            {isMobile ? (
-              <div style={{ gap: "0px", marginTop: "var(--margin-2)" }}>
-                For any enquiries, press, or internship requests, feel free to get in touch at{" "}
-                <span typo="bold">{site?.email}</span>
+
+            {!isMobile && Array.isArray(site?.socials) && site.socials.length > 0 ? (
+              <div className={styles.publicityMetaFooterSocials}>
+                {site.socials.map((social, index) => (
+                  <span key={`${social?.platform || "social"}-${index}`}>
+                    <a href={social?.link || "#"} target="_blank" rel="noopener noreferrer" className={styles.publicityContactEmail}>
+                      {social?.platform || social?.link}
+                    </a>
+                    {index < site.socials.length - 1 ? ", " : ""}
+                  </span>
+                ))}
               </div>
             ) : null}
           </div>
@@ -293,26 +313,29 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
 
               <div className={styles.galleryOverlayNavigation}>
                 <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
-                  <span typo="bold" style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
-                    ←
+                  <span className={styles.galleryOverlayNavContent}>
+                    <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
+                      ←
+                    </span>
+                    {!isMobile ? <span>{printItemsWithGallery[previousPrintIndex]?.title}</span> : null}
                   </span>
-                  {!isMobile ? <span>{printItemsWithGallery[previousPrintIndex]?.title}</span> : null}
                 </button>
 
                 <button
                   type="button"
                   className={styles.galleryOverlayClose}
                   onClick={closeGalleryOverlay}
-                  typo="bold"
                   style={{ fontSize: "22px" }}
                 >
-                  ×
+                  <span className={styles.galleryOverlayCloseGlyph}>×</span>
                 </button>
 
                 <button type="button" className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
-                  {!isMobile ? <span>{printItemsWithGallery[nextPrintIndex]?.title}</span> : null}
-                  <span typo="bold" style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
-                    →
+                  <span className={styles.galleryOverlayNavContent}>
+                    {!isMobile ? <span>{printItemsWithGallery[nextPrintIndex]?.title}</span> : null}
+                    <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>
+                      →
+                    </span>
                   </span>
                 </button>
               </div>

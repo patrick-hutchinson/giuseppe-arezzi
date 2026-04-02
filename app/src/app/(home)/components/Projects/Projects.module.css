@@ -4,7 +4,6 @@
   position: relative;
   left: calc(-1 * var(--margin-page));
   overflow: hidden;
-  isolation: isolate;
 }
 
 .projectCarouselWrap * {
@@ -85,8 +84,6 @@
   inset: 0;
   z-index: 4;
   pointer-events: none;
-  color: #fff;
-  mix-blend-mode: difference;
 }
 
 .projectHeaderLayerMobileSticky {
@@ -100,10 +97,12 @@
 
 .projectHeader {
   position: absolute;
-  top: 0;
-  left: 0;
-  padding: var(--margin-page);
+  top: var(--margin-page);
+  left: var(--margin-page);
+  padding: 0 3px;
   will-change: transform;
+  color: #000;
+  background: #fff;
 }
 
 .projectHeaderMobile {
@@ -134,13 +133,12 @@ button.toggleInfo {
   position: absolute;
   top: var(--margin-page);
   left: var(--margin-page);
-  top: 8px;
-  left: 8px;
-
-  min-width: 48px;
-  min-height: 48px;
-  padding: 0;
-  margin: calc(var(--margin-page) - 24px);
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 1.5px;
+  margin: 0;
   z-index: 30;
   cursor: pointer;
   pointer-events: all;
@@ -149,7 +147,23 @@ button.toggleInfo {
   justify-content: center;
   touch-action: manipulation;
   font-size: 22px;
-  color: inherit;
+  color: #000;
+  background: transparent;
+}
+
+.toggleInfoGlyph {
+  display: inline-block;
+  color: #000;
+  background: #fff;
+  padding: 0 1.5px;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+button.toggleInfo:hover .toggleInfoGlyph {
+  color: #fff;
+  background: #000;
 }
 
 button.toggleInfoMobile {
@@ -182,13 +196,20 @@ button.toggleInfoMobile {
   }
 
   button.toggleInfo {
-    top: 10px;
+    top: var(--margin-page);
     left: var(--margin-page);
     margin: 0;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: 0;
+    padding: 0 1.5px;
     transform: none;
     line-height: 1;
+  }
+
+  .toggleInfoGlyph {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--line-height-body);
+    line-height: var(--line-height-body);
   }
 }

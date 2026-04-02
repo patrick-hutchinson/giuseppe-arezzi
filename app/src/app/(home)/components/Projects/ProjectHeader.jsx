@@ -90,7 +90,7 @@ const ProjectHeader = ({
             <span>{project.year}</span>
           </div>
           <button className={`${styles.toggleInfo} ${styles.toggleInfoMobile}`} onClick={handleInfo}>
-            {showInfo ? "-" : "+"}
+            <span className={styles.toggleInfoGlyph}>{showInfo ? "-" : "+"}</span>
           </button>
         </div>
       </div>
@@ -111,7 +111,7 @@ const ProjectHeader = ({
             onMouseEnter={() => setIsToggleHovered(true)}
             onMouseLeave={() => setIsToggleHovered(false)}
           >
-            {showInfo ? "-" : "+"}
+            <span className={styles.toggleInfoGlyph}>{showInfo ? "-" : "+"}</span>
           </motion.button>
         )}
       </AnimatePresence>
