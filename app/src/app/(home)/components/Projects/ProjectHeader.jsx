@@ -20,9 +20,24 @@ const ProjectHeader = ({
   const [isToggleHovered, setIsToggleHovered] = useState(false);
   const [hasSnappedToCursor, setHasSnappedToCursor] = useState(false);
   const [headerSize, setHeaderSize] = useState({ width: 0, height: 0 });
+  const [edgeMargin, setEdgeMargin] = useState(0);
   const headerRef = useRef(null);
   const snapTimerRef = useRef(null);
   const shouldHideTitle = disableCursorFollow ? false : hideTitle || isToggleHovered;
+
+  useEffect(() => {
+    const updateEdgeMargin = () => {
+      const cssMargin = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--margin-page"));
+      setEdgeMargin(Number.isFinite(cssMargin) ? cssMargin : 0);
+    };
+
+    updateEdgeMargin();
+    window.addEventListener("resize", updateEdgeMargin);
+
+    return () => {
+      window.removeEventListener("resize", updateEdgeMargin);
+    };
+  }, []);
 
   useEffect(() => {
     if (!headerRef.current || typeof ResizeObserver === "undefined") return;
@@ -73,11 +88,13 @@ const ProjectHeader = ({
   if (isHoverActive) {
     const rawX = cursorPosition.x - headerSize.width / 2;
     const rawY = cursorPosition.y - headerSize.height / 2;
-    const maxX = Math.max(0, (containerSize?.width || 0) - headerSize.width);
-    const maxY = Math.max(0, (containerSize?.height || 0) - headerSize.height);
+    const relativeRawX = rawX - edgeMargin;
+    const relativeRawY = rawY - edgeMargin;
+    const maxOffsetX = Math.max(0, (containerSize?.width || 0) - headerSize.width - 2 * edgeMargin);
+    const maxOffsetY = Math.max(0, (containerSize?.height || 0) - headerSize.height - 2 * edgeMargin);
 
-    targetX = clamp(rawX, 0, maxX);
-    targetY = clamp(rawY, 0, maxY);
+    targetX = clamp(relativeRawX, 0, maxOffsetX);
+    targetY = clamp(relativeRawY, 0, maxOffsetY);
   }
 
   if (disableCursorFollow) {
