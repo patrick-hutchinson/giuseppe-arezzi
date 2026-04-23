@@ -66,11 +66,20 @@
 
 .introductionPrefixBold {
   display: inline;
-
+  color: #000;
   pointer-events: all;
   cursor: pointer;
   background: #fff;
   padding: 0 1.5px;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.introductionPrefixBold:hover {
+  color: #fff;
+  background: #000;
+  opacity: 1;
 }
 
 .introductionTextInline {
