@@ -6,6 +6,10 @@
   overflow: hidden;
 }
 
+.project + .project {
+  margin-top: -1px;
+}
+
 .projectCarouselWrap * {
   cursor: none !important;
 }
@@ -197,11 +201,6 @@ button.toggleInfoMobile {
 @media screen and (max-width: 768px) {
   .project {
     overflow: visible;
-  }
-
-  /* Prevent subpixel seams between stacked 80vh project sections on mobile. */
-  .project + .project {
-    margin-top: -1px;
   }
 }
 
