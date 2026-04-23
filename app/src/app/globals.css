@@ -96,7 +96,20 @@ button {
 }
 
 a,
-a:visited,
+a:visited {
+  color: var(--foreground);
+  text-decoration: none;
+  font-size: unset;
+  font-family: "SaansSemiBold";
+  text-align: unset;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
 button,
 button:visited {
   color: var(--foreground);

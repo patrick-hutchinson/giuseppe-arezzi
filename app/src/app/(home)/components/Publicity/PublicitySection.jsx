@@ -228,15 +228,13 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                 </div>
                 <ul>
                   {home?.print?.map((printItem, index) => (
-                    <motion.li
-                      key={printItem?.title || index}
-                      className={styles.publicityChipItem}
-                      typo={
-                        isTouch && Array.isArray(printItem?.gallery) && printItem.gallery.length > 0 ? "bold" : undefined
-                      }
-                      onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
-                      onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
-                      onClick={() => handlePrintClick(printItem)}
+                  <motion.li
+                    key={printItem?.title || index}
+                    className={styles.publicityChipItem}
+                    typo="bold"
+                    onHoverStart={isMobile ? undefined : () => handlePrintHoverStart(printItem)}
+                    onHoverEnd={isMobile ? undefined : handlePrintHoverEnd}
+                    onClick={() => handlePrintClick(printItem)}
                       transition={{ duration: 0 }}
                       whileHover={{
                         cursor: printItem.gallery ? "pointer" : "default",
