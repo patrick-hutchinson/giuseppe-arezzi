@@ -353,7 +353,7 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
 
               <div className={styles.galleryOverlayNavigation}>
                 <button type="button" className={styles.galleryOverlayNavLeft} onClick={openPreviousPrintGallery}>
-                  <span className={styles.galleryOverlayNavContent}>
+                  <span className={styles.galleryOverlayNavContent} typo="bold">
                     <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>←</span>
                     {!isMobile ? <span>{printItemsWithGallery[previousPrintIndex]?.title}</span> : null}
                   </span>
@@ -365,11 +365,13 @@ const PublicitySection = ({ home, site, awardsSectionRef, onGalleryOpenChange })
                   onClick={closeGalleryOverlay}
                   style={{ fontSize: "22px" }}
                 >
-                  <span className={styles.galleryOverlayCloseGlyph}>×</span>
+                  <div className={styles.galleryOverlayCloseGlyph} typo="bold">
+                    ×
+                  </div>
                 </button>
 
                 <button type="button" className={styles.galleryOverlayNavRight} onClick={openNextPrintGallery}>
-                  <span className={styles.galleryOverlayNavContent}>
+                  <span className={styles.galleryOverlayNavContent} typo="bold">
                     {!isMobile ? <span>{printItemsWithGallery[nextPrintIndex]?.title}</span> : null}
                     <span style={{ position: "relative", top: "-1.5px", fontSize: "22px" }}>→</span>
                   </span>

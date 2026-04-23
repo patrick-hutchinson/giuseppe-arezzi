@@ -264,16 +264,16 @@ const IntroductionText = ({ text, projectsBoundaryRef, headerVisible = false, aw
         animate={{ opacity: fadeIntroductionOut ? 0 : 1 }}
         transition={{ duration: 0 }}
       >
-        {headerVisible ? (
-          <div className={styles.introductionTextWithPrefix}>
-            <span className={styles.introductionPrefixBold} typo="bold" onClick={handleLogotypeClick}>
-              {fixedPrefixText}
-            </span>
-            <Text text={introTextWithoutPrefix} className={styles.introductionTextInline} />
-          </div>
-        ) : (
-          <Text text={introText} className={styles.introductionText} />
-        )}
+        <div className={styles.introductionTextWithPrefix}>
+          <span
+            className={styles.introductionPrefixBold}
+            typo="bold"
+            onClick={headerVisible ? handleLogotypeClick : undefined}
+          >
+            {fixedPrefixText}
+          </span>
+          <Text text={introTextWithoutPrefix} className={styles.introductionTextInline} />
+        </div>
       </motion.div>
     </div>
   );

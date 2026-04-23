@@ -133,7 +133,7 @@
   width: fit-content;
   color: #000;
   background: #fff;
-  padding: 0 1.5px;
+  /* padding: 0 1.5px; */
 }
 
 button.toggleInfo {
@@ -144,7 +144,7 @@ button.toggleInfo {
   height: auto;
   min-width: 0;
   min-height: 0;
-  padding: 0 1.5px;
+  /* padding: 0 1.5px; */
   margin: 0;
   z-index: 30;
   cursor: pointer;
@@ -162,10 +162,15 @@ button.toggleInfo {
   display: inline-block;
   color: #000;
   background: #fff;
-  padding: 0 1.5px;
+  /* padding: 0 1.5px; */
   transition:
     background-color 0.16s ease,
     color 0.16s ease;
+
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 button.toggleInfo:hover .toggleInfoGlyph {
@@ -193,6 +198,11 @@ button.toggleInfoMobile {
   .project {
     overflow: visible;
   }
+
+  /* Prevent subpixel seams between stacked 80vh project sections on mobile. */
+  .project + .project {
+    margin-top: -1px;
+  }
 }
 
 @media screen and (min-width: 769px) {
@@ -208,7 +218,7 @@ button.toggleInfoMobile {
     margin: 0;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: 0 1.5px;
+    /* padding: 0 1.5px; */
     transform: none;
     line-height: 1;
   }
