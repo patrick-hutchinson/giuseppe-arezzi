@@ -159,18 +159,18 @@ button.toggleInfo {
 }
 
 .toggleInfoGlyph {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #000;
   background: #fff;
   /* padding: 0 1.5px; */
   transition:
     background-color 0.16s ease,
     color 0.16s ease;
-
   aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: var(--line-height-body);
+  line-height: var(--line-height-body);
 }
 
 button.toggleInfo:hover .toggleInfoGlyph {
@@ -223,10 +223,4 @@ button.toggleInfoMobile {
     line-height: 1;
   }
 
-  .toggleInfoGlyph {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--line-height-body);
-    line-height: var(--line-height-body);
-  }
 }
