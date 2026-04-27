@@ -14,8 +14,6 @@ export default function HomePage({ site, home, projects }) {
   const [showFloatingHeader, setShowFloatingHeader] = useState(false);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
-  const [isHoveringContact, setIsHoveringContact] = useState(false);
-
   useEffect(() => {
     let frameId = null;
 
@@ -46,6 +44,11 @@ export default function HomePage({ site, home, projects }) {
     };
   }, []);
 
+  const handleInfoClick = () => {
+    const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    window.scrollTo({ top: maxScrollY, behavior: "smooth" });
+  };
+
   return (
     <main className={`${styles.main} ${isLayoutReady ? styles.mainReady : styles.mainPending}`}>
       {showFloatingHeader ? (
@@ -55,15 +58,9 @@ export default function HomePage({ site, home, projects }) {
               Giuseppe Arezzi
             </div>
           ) : null}
-          <a
-            href={`mailto:${site?.email || ""}`}
-            className={styles.floatingHeaderContact}
-            onMouseEnter={() => setIsHoveringContact(true)}
-            onMouseLeave={() => setIsHoveringContact(false)}
-            typo="bold"
-          >
-            {isHoveringContact ? site?.email : "Contact"}
-          </a>
+          <button type="button" className={styles.floatingHeaderContact} onClick={handleInfoClick} typo="bold">
+            Info
+          </button>
         </header>
       ) : null}
 
