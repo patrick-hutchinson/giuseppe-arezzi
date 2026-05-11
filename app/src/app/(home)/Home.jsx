@@ -47,17 +47,21 @@ export default function HomePage({ site, home, projects }) {
   const handleInfoClick = () => {
     const targetNode = awardsSectionRef.current;
     if (!targetNode) return;
+    const targetTop = Math.max(
+      0,
+      (window.scrollY || window.pageYOffset || 0) + targetNode.getBoundingClientRect().top - 16,
+    );
 
     const lenis = window?.lenis || window?.__lenis;
     if (lenis?.scrollTo) {
-      lenis.scrollTo(targetNode, {
+      lenis.scrollTo(targetTop, {
         duration: 1,
         easing: (value) => 1 - (1 - value) ** 3,
       });
       return;
     }
 
-    targetNode.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: targetTop, behavior: "smooth" });
   };
 
   return (
