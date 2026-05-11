@@ -45,8 +45,19 @@ export default function HomePage({ site, home, projects }) {
   }, []);
 
   const handleInfoClick = () => {
-    const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    window.scrollTo({ top: maxScrollY, behavior: "smooth" });
+    const targetNode = awardsSectionRef.current;
+    if (!targetNode) return;
+
+    const lenis = window?.lenis || window?.__lenis;
+    if (lenis?.scrollTo) {
+      lenis.scrollTo(targetNode, {
+        duration: 1,
+        easing: (value) => 1 - (1 - value) ** 3,
+      });
+      return;
+    }
+
+    targetNode.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
