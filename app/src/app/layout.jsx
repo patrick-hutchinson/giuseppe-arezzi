@@ -41,11 +41,14 @@ export async function generateMetadata() {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <DeviceProvider>
-        <ViewportProvider>
-          <body>{children}</body>
-        </ViewportProvider>
-      </DeviceProvider>
+      <head>
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="cc9341ef-be00-431b-b65b-1b92c289ea25" />
+      </head>
+      <body>
+        <DeviceProvider>
+          <ViewportProvider>{children}</ViewportProvider>
+        </DeviceProvider>
+      </body>
     </html>
   );
 }
