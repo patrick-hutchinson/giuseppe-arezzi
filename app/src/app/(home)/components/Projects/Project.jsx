@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import styles from "./Projects.module.css";
 
@@ -7,13 +7,19 @@ import ProjectHeader from "./ProjectHeader";
 import ProjectDescription from "./ProjectDescription";
 import { DeviceContext } from "@/context/DeviceContext";
 
-const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
+const Project = ({
+  project,
+  projectId,
+  projectIndex = 0,
+  isActive = false,
+  activePointerPosition = null,
+  isLastProject = false,
+}) => {
   const { isTouch, isMobile, isTablet } = useContext(DeviceContext);
   const [showInfo, setShowInfo] = useState(false);
   const [isInfoPanelHovered, setIsInfoPanelHovered] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
 
-  const [isHovering, setIsHovering] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const projectRef = useRef(null);
@@ -36,30 +42,44 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
 
   const useMobileInfoMode = isMobile || (isTablet && isPortrait);
 
-  const handleMouseMove = (event) => {
+  const updateCursorFromViewport = useCallback((point) => {
     if (isTouch) return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    lastPointerRef.current = { x: event.clientX, y: event.clientY };
-    setCursorPosition({
-      x: event.clientX - bounds.left,
-      y: event.clientY - bounds.top,
-    });
-    setContainerSize({
-      width: bounds.width,
-      height: bounds.height,
-    });
-  };
+    if (!point || !projectRef.current) return;
 
-  const handleMouseEnter = (event) => {
-    if (isTouch) return;
-    setIsHovering(true);
-    handleMouseMove(event);
-  };
+    const bounds = projectRef.current.getBoundingClientRect();
+    lastPointerRef.current = point;
 
-  const handleMouseLeave = () => {
+    setCursorPosition((previousPosition) => {
+      const nextPosition = {
+        x: point.x - bounds.left,
+        y: point.y - bounds.top,
+      };
+
+      if (previousPosition.x === nextPosition.x && previousPosition.y === nextPosition.y) {
+        return previousPosition;
+      }
+
+      return nextPosition;
+    });
+
+    setContainerSize((previousSize) => {
+      const nextSize = {
+        width: bounds.width,
+        height: bounds.height,
+      };
+
+      if (previousSize.width === nextSize.width && previousSize.height === nextSize.height) {
+        return previousSize;
+      }
+
+      return nextSize;
+    });
+  }, [isTouch]);
+
+  const handlePointerMove = (event) => {
     if (isTouch) return;
-    setIsHovering(false);
-    lastPointerRef.current = null;
+    if (event.pointerType && event.pointerType !== "mouse") return;
+    updateCursorFromViewport({ x: event.clientX, y: event.clientY });
   };
 
   const handleInfo = () => {
@@ -67,31 +87,31 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
   };
 
   useEffect(() => {
-    if (isTouch || !isHovering) return;
+    if (isTouch) return;
+
+    if (!isActive) {
+      lastPointerRef.current = null;
+      return;
+    }
+
+    if (activePointerPosition) {
+      updateCursorFromViewport(activePointerPosition);
+    }
+  }, [activePointerPosition, isActive, isTouch, updateCursorFromViewport]);
+
+  useEffect(() => {
+    if (isTouch || !isActive) return;
 
     let frameId = null;
 
-    const updateCursorFromViewport = () => {
+    const updateCursorAfterScroll = () => {
       frameId = null;
-      if (!projectRef.current || !lastPointerRef.current) return;
-
-      const bounds = projectRef.current.getBoundingClientRect();
-      const { x, y } = lastPointerRef.current;
-
-      setCursorPosition({
-        x: x - bounds.left,
-        y: y - bounds.top,
-      });
-
-      setContainerSize({
-        width: bounds.width,
-        height: bounds.height,
-      });
+      updateCursorFromViewport(lastPointerRef.current);
     };
 
     const requestUpdate = () => {
       if (frameId !== null) return;
-      frameId = window.requestAnimationFrame(updateCursorFromViewport);
+      frameId = window.requestAnimationFrame(updateCursorAfterScroll);
     };
 
     window.addEventListener("scroll", requestUpdate, { passive: true });
@@ -102,20 +122,19 @@ const Project = ({ project, projectIndex = 0, isLastProject = false }) => {
       window.removeEventListener("resize", requestUpdate);
       if (frameId !== null) window.cancelAnimationFrame(frameId);
     };
-  }, [isHovering, isTouch]);
+  }, [isActive, isTouch, updateCursorFromViewport]);
 
   return (
     <div
       ref={projectRef}
+      data-project-id={projectId}
       className={`${styles.project}`}
       style={{ zIndex: projectIndex + 1 }}
-      onMouseMove={isTouch ? undefined : handleMouseMove}
-      onMouseEnter={isTouch ? undefined : handleMouseEnter}
-      onMouseLeave={isTouch ? undefined : handleMouseLeave}
+      onPointerMove={isTouch ? undefined : handlePointerMove}
     >
       <ProjectHeader
         project={project}
-        isHovering={isHovering}
+        isHovering={isActive}
         cursorPosition={cursorPosition}
         handleInfo={handleInfo}
         showInfo={showInfo}

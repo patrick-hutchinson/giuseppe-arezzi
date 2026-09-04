@@ -18,11 +18,9 @@ const ProjectHeader = ({
 }) => {
   const isHoverActive = isHovering && !disableCursorFollow;
   const [isToggleHovered, setIsToggleHovered] = useState(false);
-  const [hasSnappedToCursor, setHasSnappedToCursor] = useState(false);
   const [headerSize, setHeaderSize] = useState({ width: 0, height: 0 });
   const [edgeMargin, setEdgeMargin] = useState(0);
   const headerRef = useRef(null);
-  const snapTimerRef = useRef(null);
   const shouldHideTitle = disableCursorFollow ? false : hideTitle || isToggleHovered;
 
   useEffect(() => {
@@ -54,33 +52,6 @@ const ProjectHeader = ({
 
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (!isHoverActive) {
-      setHasSnappedToCursor(false);
-      if (snapTimerRef.current) {
-        window.clearTimeout(snapTimerRef.current);
-        snapTimerRef.current = null;
-      }
-      return;
-    }
-
-    if (snapTimerRef.current) {
-      window.clearTimeout(snapTimerRef.current);
-    }
-
-    snapTimerRef.current = window.setTimeout(() => {
-      setHasSnappedToCursor(true);
-      snapTimerRef.current = null;
-    }, 180);
-
-    return () => {
-      if (snapTimerRef.current) {
-        window.clearTimeout(snapTimerRef.current);
-        snapTimerRef.current = null;
-      }
-    };
-  }, [isHoverActive]);
 
   let targetX = 0;
   let targetY = 0;
